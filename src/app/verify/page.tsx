@@ -1,13 +1,15 @@
 import Image from "next/image"
 import Link from "next/link"
 import { OtpInput } from "@/components/otp-input"
+import Imgl from "@/app/assets/starbucks/qwiky logo.avif"
+import Imgp from "@/app/assets/starbucks/img-2.jpg"
 
 export default function VerifyPage() {
   return (
-    <div className="relative h-screen w-full max-w-sm mx-auto overflow-hidden">
+    <div className="relative h-screen w-full mx-auto overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
-        <Image src="/images/starbucks-interior.png" alt="Starbucks interior" fill className="object-cover" priority />
+        <Image src={Imgp} alt="Starbucks interior" fill className="object-cover" priority />
         <div className="absolute inset-0 bg-black/10" />
       </div>
 
@@ -15,7 +17,7 @@ export default function VerifyPage() {
       <div className="relative z-10 flex flex-col items-center h-full">
         {/* Logo */}
         <div className="mt-12 flex flex-col items-center">
-          <Image src="/images/starbucks-logo.png" alt="Starbucks" width={80} height={80} className="mb-2" />
+          <Image src={Imgl} alt="Starbucks" width={80} height={80} className="mb-2" />
           <h2 className="text-white text-lg font-semibold tracking-wider">STAR BUCKS</h2>
         </div>
 
@@ -33,7 +35,7 @@ export default function VerifyPage() {
           <div className="bg-white rounded-xl p-5 shadow-lg">
             <OtpInput />
 
-            <div className="mt-2 text-center">
+            <div className="mt-2 px-2">
               <button className="text-green-800 text-sm font-medium">Resend Now</button>
             </div>
 
