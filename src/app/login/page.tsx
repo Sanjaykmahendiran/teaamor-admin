@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { PhoneInput } from "@/components/phone-input"
-import Imgl from "@/app/assets/starbucks/qwiky logo.avif"
+import Imgl from "@/app/assets/starbucks/Qwiky02.png"
 import Imgp from "@/app/assets/starbucks/img-1.jpg"
 
 export default function LoginPage() {
@@ -17,12 +17,20 @@ export default function LoginPage() {
       <div className="relative z-10 flex flex-col items-center h-full">
         {/* Logo */}
         <div className="mt-12 flex flex-col items-center">
-          <Image src={Imgl} alt="Quiky" width={80} height={80} className="mb-2" />
-          <h2 className="text-white text-lg font-semibold tracking-wider">QWIKY</h2>
+          <Image src={Imgl} alt="QWIKY" width={130} height={130} className="" />
+          <h2
+            className="text-[#ed802d] text-3xl font-semibold tracking-wider"
+            style={{
+              WebkitTextStroke: '0.5px #ffffff', // orange border
+              color: '#ed802d',
+            }}
+          >
+            QWIKY
+          </h2>
         </div>
 
         {/* Welcome Text */}
-        <div className="mt-8 text-center">
+        <div className="mt-4 text-center">
           <h1 className="text-white text-3xl font-bold">Welcome Back</h1>
           <p className="text-white/80 mt-1">Hello, sign in to continue</p>
         </div>
@@ -36,7 +44,7 @@ export default function LoginPage() {
             <PhoneInput />
 
             <Link href="/verify">
-              <button className="w-full mt-4 py-3 bg-green-800 rounded-full text-white font-medium">
+              <button className="w-full mt-4 py-3 bg-[#ff734d] rounded-full text-white font-medium">
                 Send OTP
               </button>
             </Link>

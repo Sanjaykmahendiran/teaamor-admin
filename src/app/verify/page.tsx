@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { OtpInput } from "@/components/otp-input"
-import Imgl from "@/app/assets/starbucks/qwiky logo.avif"
+import Imgl from "@/app/assets/starbucks/Qwiky Logo.png"
 import Imgp from "@/app/assets/starbucks/img-2.jpg"
 
 export default function VerifyPage() {
@@ -18,7 +18,7 @@ export default function VerifyPage() {
         {/* Logo */}
         <div className="mt-12 flex flex-col items-center">
           <Image src={Imgl} alt="Starbucks" width={80} height={80} className="mb-2" />
-          <h2 className="text-white text-lg font-semibold tracking-wider">STAR BUCKS</h2>
+          <h2 className="text-white text-lg font-semibold tracking-wider">QWIKY</h2>
         </div>
 
         {/* Welcome Text */}
@@ -36,11 +36,11 @@ export default function VerifyPage() {
             <OtpInput />
 
             <div className="mt-2 px-2">
-              <button className="text-green-800 text-sm font-medium">Resend Now</button>
+              <button className="text-orange-500 text-sm font-medium">Resend Now</button>
             </div>
 
             <Link href="/dashboard">
-              <button className="w-full mt-4 py-3 bg-green-800 rounded-full text-white font-medium">Submit</button>
+              <button className="w-full mt-4 py-3 bg-[#ff734d] rounded-full text-white font-medium">Submit</button>
             </Link>
           </div>
         </div>

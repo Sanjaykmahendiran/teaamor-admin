@@ -3,7 +3,7 @@ import useEmblaCarousel from "embla-carousel-react"
 import { Card } from "@/components/ui/card"
 
 export default function FinancialMetricsSlider() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({
+  const [emblaRef] = useEmblaCarousel({
     align: "start",
     containScroll: "trimSnaps",
     dragFree: true,
@@ -29,7 +29,7 @@ export default function FinancialMetricsSlider() {
 
   return (
     <div className="w-full mt-4 mb-2">
-  <div className="flex justify-between items-center mb-2">
+  <div className="justify-between items-center mb-2">
     <div className="overflow-hidden" ref={emblaRef}>
       <div className="flex -ml-4">
         {metrics.map((metric, index) => (

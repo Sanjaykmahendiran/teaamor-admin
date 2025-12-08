@@ -1,30 +1,29 @@
-import { Bell, Search, Home, ShoppingBag, Menu, User, MoreHorizontal, BarChart3 } from "lucide-react"
+'use client'
+
 import Link from "next/link"
 import Image from "next/image"
 import FinancialMetricsSlider from "@/components/financial-metrics-slider"
+import TotalOrderSlider from "@/components/total-order-slider"
+import Header from "@/components/header"
+import SalesOverview from "@/components/SalesOverview"
 import Imga from "@/app/assets/profile/profile.jpg"
 import Imgb from "@/app/assets/profile/profile1.png"
 import Img from "@/app/assets/profile/profile.jpg"
 import Imgq from "@/app/assets/profile/profile1.png"
 import Imgq2 from "@/app/assets/profile/profile.jpg"
+import Footer from "@/components/footer"
+
+import { useState } from "react"
 
 export default function Dashboard() {
+  const [selectedStatusTab, setSelectedStatusTab] = useState("processing");
+
   return (
+
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-white p-4 border-b flex items-center justify-between">
-        <div className="flex items-center">
-          <div className="flex items-center mr-2">
-            <div className="h-5 w-5 bg-orange-500 rounded-full opacity-70"></div>
-            <div className="h-5 w-5 bg-orange-400 rounded-full -ml-2"></div>
-          </div>
-          <span className="font-medium">Online</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <Bell className="h-5 w-5 text-gray-600" />
-          <Search className="h-5 w-5 text-gray-600" />
-        </div>
-      </header>
+      <Header />
+
 
       {/* Main Content */}
       <main className="flex-1 p-4">
@@ -46,32 +45,40 @@ export default function Dashboard() {
           <p className="text-sm text-gray-500">Quick management of the last 5 orders</p>
 
           {/* Order Status Pills */}
-          <div className="flex gap-2 mt-3 mb-4">
-            <div className="flex items-center gap-1">
-              <div className="h-8 w-8 bg-orange-400 rounded-full flex items-center justify-center text-white text-xs">
-                2
-              </div>
-              <span className="text-xs">Processing</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="h-8 w-8 bg-emerald-400 rounded-full flex items-center justify-center text-white text-xs">
-                1
-              </div>
-              <span className="text-xs">Ready</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="h-8 w-8 bg-blue-400 rounded-full flex items-center justify-center text-white text-xs">
-                2
-              </div>
-              <span className="text-xs">Completed</span>
-            </div>
+          <div className="flex gap-3 mt-4 mb-4 px-2">
+            {[
+              { key: "all", label: "All", count: 2480 },
+              { key: "processing", label: "Processing", count: 191 },
+              { key: "ready", label: "Ready", count: 237 },
+              { key: "completed", label: "Completed", count: 1737 },
+            ].map(({ key, label, count }) => {
+              const isActive = selectedStatusTab === key;
+
+              return (
+                <button
+                  key={key}
+                  onClick={() => setSelectedStatusTab(key)}
+                  className={`relative flex items-center justify-center px-4 py-2 rounded-full transition-all duration-200 ${isActive ? "bg-[#FF6A3D] text-white" : "bg-[#f5f5f5] text-gray-600"
+                    }`}
+                >
+                  {/* Badge */}
+                  <div
+                    className="absolute -top-2 -right-2 bg-emerald-300 text-white text-[11px] font-bold px-2 py-[1px] rounded-full shadow-md"
+                  >
+                    {count}
+                  </div>
+                  <span className="text-sm font-medium">{label}</span>
+                </button>
+              );
+            })}
           </div>
 
+
           {/* Order List */}
-          <div className="space-y-4">
+          {/* <div className="space-y- mb-6 bg-white shadow-sm"> */}
             {/* Order #19644 */}
-            <div className="bg-white p-3 rounded-lg shadow-sm">
-              <div className="flex justify-between items-start">
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="flex justify-between items-start mt-2 space-y-4 border-b">
                 <div>
                   <p className="font-medium">Order #19644</p>
                   <p className="text-xs text-gray-500">1 items for ken ken</p>
@@ -83,11 +90,11 @@ export default function Dashboard() {
                   <span className="text-xs text-gray-500">Unpaid</span>
                 </div>
               </div>
-            </div>
+            
 
             {/* Order #19643 */}
-            <div className="bg-white p-3 rounded-lg shadow-sm">
-              <div className="flex justify-between items-start">
+            {/* <div className="bg-white p-3 rounded-lg shadow-sm"> */}
+              <div className="flex justify-between items-start mt-3 space-y-4 border-b">
                 <div>
                   <p className="font-medium">Order #19643</p>
                   <p className="text-xs text-gray-500">1 items for Walk-in Customer</p>
@@ -98,12 +105,12 @@ export default function Dashboard() {
                   <span className="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">Complete</span>
                   <span className="text-xs text-gray-500">Paid</span>
                 </div>
-              </div>
+              {/* </div> */}
             </div>
 
             {/* Order #19641 */}
-            <div className="bg-white p-3 rounded-lg shadow-sm">
-              <div className="flex justify-between items-start">
+            {/* <div className="bg-white p-3 rounded-lg shadow-sm"> */}
+              <div className="flex justify-between items-start mt-3 space-y-4 border-b">
                 <div>
                   <p className="font-medium">Order #19641</p>
                   <p className="text-xs text-gray-500">1 items for Walk-in Customer</p>
@@ -114,12 +121,11 @@ export default function Dashboard() {
                   <span className="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">Complete</span>
                   <span className="text-xs text-gray-500">Paid</span>
                 </div>
-              </div>
+              {/* </div> */}
             </div>
 
             {/* Order #19639 */}
-            <div className="bg-white p-3 rounded-lg shadow-sm">
-              <div className="flex justify-between items-start">
+              <div className="flex justify-between items-start mt-3 space-y-4 border-b">
                 <div>
                   <p className="font-medium">Order #19639</p>
                   <p className="text-xs text-gray-500">1 items for Aydin Ametsxan</p>
@@ -130,12 +136,11 @@ export default function Dashboard() {
                   <span className="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">Complete</span>
                   <span className="text-xs text-gray-500">Paid</span>
                 </div>
-              </div>
             </div>
 
             {/* Order #19638 */}
-            <div className="bg-white p-3 rounded-lg shadow-sm">
-              <div className="flex justify-between items-start">
+            {/* <div className="bg-white p-3 rounded-lg shadow-sm"> */}
+              <div className="flex justify-between items-start mt-3 space-y-4">
                 <div>
                   <p className="font-medium">Order #19638</p>
                   <p className="text-xs text-gray-500">1 items for Aydin Ametsxan</p>
@@ -147,12 +152,14 @@ export default function Dashboard() {
                   <span className="text-xs text-gray-500">Unpaid</span>
                 </div>
               </div>
-            </div>
+            {/* </div> */}
           </div>
+        {/* </div> */}
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-3 gap-2 mb-6">
+        <TotalOrderSlider />
+        {/* <div className="grid grid-cols-3 gap-2 mb-6">
           <div className="bg-purple-200 p-3 rounded-lg">
             <p className="text-xs text-purple-800">Total Orders</p>
             <p className="font-bold text-purple-800">$2102.00</p>
@@ -165,14 +172,14 @@ export default function Dashboard() {
             <p className="text-xs text-blue-800">Total refund</p>
             <p className="font-bold text-blue-800">$34957.30</p>
           </div>
-        </div>
+        </div> */}
 
         {/* Top Customers Section */}
 
         <h2 className="text-xl font-bold text-gray-800">Top Customers</h2>
         <p className="text-sm text-gray-500">Your top customer consumer</p>
         <div className="mb-6 bg-white p-4 shadow-sm">
-          <div className="mt-3 space-y-3">
+          <div className="mt-3 space-y-4 border-b">
             {/* Customer 1 */}
             <div className="flex items-center border-b pb-3">
               <div className="w-12 h-12 relative mr-3">
@@ -266,7 +273,7 @@ export default function Dashboard() {
         </div>
 
         {/* Sales Overview Section */}
-        <div className="mb-6 bg-white p-4 rounded-lg shadow-sm">
+        {/* <div className="mb-6 bg-white p-4 rounded-lg shadow-sm">
           <div className="flex justify-between items-center mb-3">
             <h2 className="text-xl font-bold text-gray-800">Sales overview</h2>
             <BarChart3 className="h-5 w-5 text-gray-400" />
@@ -313,10 +320,15 @@ export default function Dashboard() {
             <div className="text-xs text-gray-500 text-center">80000.0000</div>
             <div className="col-span-2"></div>
           </div>
-        </div>
+        </div> */}
+{/* Sales Overview Section */}
+  <div className="flex justify-between items-center mb-3">
+  </div>
+  <SalesOverview />
+
 
         {/* Review Overview Section */}
-        <div className="mb-6 bg-white p-4 rounded-lg shadow-sm">
+        <div className="bg-white p-4 rounded-lg shadow-sm">
           <h2 className="text-xl font-bold text-gray-800">Overview of Review</h2>
           <p className="text-sm text-gray-500">This month you got 1 New Reviews</p>
 
@@ -367,38 +379,16 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <button className="w-full mt-4 bg-orange-400 hover:bg-orange-500 text-white py-3 rounded-lg transition-colors">
-            View All
-          </button>
+          <Link href="/customer-reviews" className="flex items-center justify-center text-blue-500 mt-4">
+            <button className="w-full mt-4 bg-[#ff734d] hover:bg-orange-500 text-white py-3 rounded-lg transition-colors">
+              View All
+            </button>
+          </Link>
         </div>
 
       </main>
+      <Footer />
 
-      {/* Bottom Navigation */}
-      <footer className="sticky bottom-0 bg-white border-t py-2">
-        <div className="flex justify-around items-center">
-          <Link href="#" className="flex flex-col items-center">
-            <Home className="h-5 w-5 text-orange-500" />
-            <span className="text-xs text-orange-500">Home</span>
-          </Link>
-          <Link href="#" className="flex flex-col items-center">
-            <ShoppingBag className="h-5 w-5 text-gray-400" />
-            <span className="text-xs text-gray-400">Orders</span>
-          </Link>
-          <Link href="#" className="flex flex-col items-center">
-            <Menu className="h-5 w-5 text-gray-400" />
-            <span className="text-xs text-gray-400">Menu</span>
-          </Link>
-          <Link href="#" className="flex flex-col items-center">
-            <User className="h-5 w-5 text-gray-400" />
-            <span className="text-xs text-gray-400">Account</span>
-          </Link>
-          <Link href="#" className="flex flex-col items-center">
-            <MoreHorizontal className="h-5 w-5 text-gray-400" />
-            <span className="text-xs text-gray-400">Others</span>
-          </Link>
-        </div>
-      </footer>
     </div>
   )
 }

@@ -124,7 +124,7 @@ export default function OnboardingPage() {
                           {slide.description}
                         </h5>
                         <Link href="/login" className="inline-block pb-8">
-                          <div className="w-14 h-14 rounded-full bg-[#1b598f] flex items-center justify-center shadow-lg">
+                          <div className="w-14 h-14 rounded-full bg-[#ff734d] flex items-center justify-center shadow-lg">
                             <ChevronRight className="text-white w-8 h-8" />
                           </div>
                         </Link>

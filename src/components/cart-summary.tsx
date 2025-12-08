@@ -3,9 +3,9 @@
 import { useState } from "react"
 
 export function CartSummary() {
-  const [subtotal, setSubtotal] = useState(10.48)
-  const [tax, setTax] = useState(1.7)
-  const [total, setTotal] = useState(12.18)
+  const [subtotal] = useState(10.48)
+  const [] = useState(1.7)
+  const [total] = useState(12.18)
 
   return (
     <div className="mt-6 space-y-2">
