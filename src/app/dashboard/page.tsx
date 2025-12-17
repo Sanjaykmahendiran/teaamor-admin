@@ -32,7 +32,7 @@ export default function Dashboard() {
           <h1 className="text-2xl font-bold text-gray-800">Earnings</h1>
           <p className="text-sm text-gray-500">Your sales, cash in and referral earnings</p>
           <div className="mt-2">
-            <p className="text-3xl font-bold text-orange-500">$37518.96</p>
+            <p className="text-3xl font-bold text-[#917c3d]">$37518.96</p>
           </div>
 
           {/* Stats Cards */}
@@ -58,7 +58,7 @@ export default function Dashboard() {
                 <button
                   key={key}
                   onClick={() => setSelectedStatusTab(key)}
-                  className={`relative flex items-center justify-center px-4 py-2 rounded-full transition-all duration-200 ${isActive ? "bg-[#FF6A3D] text-white" : "bg-[#f5f5f5] text-gray-600"
+                  className={`relative flex items-center justify-center px-4 py-2 rounded-full transition-all duration-200 ${isActive ? "bg-[#917c3d] text-white" : "bg-[#f5f5f5] text-gray-600"
                     }`}
                 >
                   {/* Badge */}
@@ -380,7 +380,7 @@ export default function Dashboard() {
           </div>
 
           <Link href="/customer-reviews" className="flex items-center justify-center text-blue-500 mt-4">
-            <button className="w-full mt-4 bg-[#ff734d] hover:bg-orange-500 text-white py-3 rounded-lg transition-colors">
+            <button className="w-full mt-4 bg-[#917c3d] hover:bg-orange-500 text-white py-3 rounded-lg transition-colors">
               View All
             </button>
           </Link>

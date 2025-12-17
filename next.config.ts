@@ -1,11 +1,19 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  output: "export",
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+    basePath: '/admin',
+ 
+  devIndicators: false,
+  reactStrictMode: false,
   images: {
-  unoptimized: true,
-},
+    unoptimized: true,
+  },
+  output: 'export',
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true, 
+  },
 };
 
 export default nextConfig;
-

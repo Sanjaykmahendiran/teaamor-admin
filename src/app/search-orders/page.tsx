@@ -13,7 +13,7 @@ export default function SearchOrdersPage() {
         if (!value.trim()) return;
         setRecentSearches((prev) => {
             const newSearches = [value, ...prev.filter((item) => item !== value)];
-            return newSearches.slice(0, 10); // Limit to last 10
+            return newSearches.slice(0, 10); // Limit to  10
         });
         setSearch("");
     };

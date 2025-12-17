@@ -8,6 +8,19 @@ import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { motion, AnimatePresence } from "framer-motion"
 
+// --- IMAGE IMPORTS ---
+import milk01 from "@/app/assets/milk-tea/signature-tea.jpg";
+import hotMilk01 from "@/app/assets/hot-milk/masala-milk.jpg";
+import filterCoffee from "@/app/assets/coffee/filter-coffee.jpg";
+import coldChocolate from "@/app/assets/cold-shake/cold-chocolate.jpg";
+import blackTea from "@/app/assets/water-based-tea/black-tea.jpg";
+import icedTea from "@/app/assets/chillers/iced-tea.jpg";
+import classicFries from "@/app/assets/fries/classic-french-fries.jpg";
+import alooSamosa from "@/app/assets/samosa/aloo-samosa.jpg";
+import vegPuff from "@/app/assets/puff/veg-puff.jpg";
+import chickenNuggets from "@/app/assets/quick-bites/chicken-nuggets.jpg";
+import plainMaggi from "@/app/assets/maggi/plain-maggi.jpg";
+
 type Category = {
   id: string
   name: string
@@ -28,521 +41,223 @@ type MenuItem = {
 }
 
 export function MenuInterface() {
+  // --- 1. UPDATED CATEGORIES FOR TEA AMOR ---
   const [categories, setCategories] = useState<Category[]>([
-    // Menu Items Categories
-    { id: "desserts", name: "Desserts & Drinks", itemCount: 3, isOpen: false, tabType: "Menu Items" },
-    { id: "group-meals", name: "Group Meals", itemCount: 2, isOpen: false, tabType: "Menu Items" },
-    { id: "rice-bowls", name: "Rice Bowls", itemCount: 1, isOpen: false, tabType: "Menu Items" },
-    { id: "appetizers", name: "Appetizers", itemCount: 2, isOpen: false, tabType: "Menu Items" },
+    // Tab: Menu Items
+    { id: "milk-tea", name: "Milk Tea", itemCount: 4, isOpen: true, tabType: "Menu Items" },
+    { id: "hot-milk", name: "Hot Milk", itemCount: 5, isOpen: false, tabType: "Menu Items" },
+    { id: "coffee", name: "Coffee", itemCount: 4, isOpen: false, tabType: "Menu Items" },
+    { id: "cold-shakes", name: "Cold Shakes", itemCount: 4, isOpen: false, tabType: "Menu Items" },
+    { id: "quick-bites", name: "Quick Bites", itemCount: 8, isOpen: false, tabType: "Menu Items" },
+    { id: "maggi", name: "Maggi", itemCount: 4, isOpen: false, tabType: "Menu Items" },
 
-    // Addons Categories
-    { id: "extra-toppings", name: "Extra Toppings", itemCount: 4, isOpen: false, tabType: "Addons" },
-    { id: "sauces", name: "Sauces & Dips", itemCount: 3, isOpen: false, tabType: "Addons" },
-    { id: "sides", name: "Side Dishes", itemCount: 2, isOpen: false, tabType: "Addons" },
+    // Tab: Addons
+    { id: "sugar", name: "Sweeteners", itemCount: 3, isOpen: false, tabType: "Addons" },
+    { id: "toppings", name: "Extra Toppings", itemCount: 2, isOpen: false, tabType: "Addons" },
 
-    // Size Categories
-    { id: "portion-sizes", name: "Portion Sizes", itemCount: 3, isOpen: false, tabType: "Size" },
-    { id: "drink-sizes", name: "Drink Sizes", itemCount: 3, isOpen: false, tabType: "Size" },
+    // Tab: Size
+    { id: "cup-sizes", name: "Cup Sizes", itemCount: 2, isOpen: false, tabType: "Size" },
 
-    // Ingredients Categories
-    { id: "proteins", name: "Proteins", itemCount: 5, isOpen: false, tabType: "Ingredients" },
-    { id: "vegetables", name: "Vegetables", itemCount: 6, isOpen: false, tabType: "Ingredients" },
-    { id: "grains", name: "Grains & Rice", itemCount: 3, isOpen: false, tabType: "Ingredients" },
-
-    // Cooking Reference Categories
-    { id: "spice-levels", name: "Spice Levels", itemCount: 4, isOpen: false, tabType: "Cooking Reference" },
-    { id: "cooking-methods", name: "Cooking Methods", itemCount: 3, isOpen: false, tabType: "Cooking Reference" },
-    { id: "dietary-options", name: "Dietary Options", itemCount: 4, isOpen: false, tabType: "Cooking Reference" },
+    // Tab: Cooking Reference (Customizations)
+    { id: "sugar-level", name: "Sugar Level", itemCount: 4, isOpen: false, tabType: "Cooking Reference" },
+    { id: "temp", name: "Temperature", itemCount: 2, isOpen: false, tabType: "Cooking Reference" },
   ])
 
+  // --- 2. UPDATED MENU ITEMS FOR TEA AMOR ---
   const [menuItems, setMenuItems] = useState<MenuItem[]>([
-    // Menu Items
+    // -- Milk Tea --
     {
-      id: "1",
-      name: "2-pc. Mushroom Pepper Steak Meal",
-      description: "Delicious mushroom steak with rice and sauce.",
-      price: "$107.00",
-      image: "/placeholder.svg?height=80&width=80",
+      id: "milk1",
+      name: "Signature Tea",
+      description: "Our special signature milk tea blend.",
+      price: "₹25.00",
+      image: milk01.src,
       available: true,
-      categoryId: "desserts",
+      categoryId: "milk-tea",
       tabType: "Menu Items",
     },
     {
-      id: "2",
-      name: "2-pc. Mushroom Pepper Steak w/ Egg Meal",
-      description: "Served with a fried egg on top.",
-      price: "$129.00",
-      image: "/placeholder.svg?height=80&width=80",
+      id: "milk2",
+      name: "Classic Tea",
+      description: "Traditional classic milk tea.",
+      price: "₹15.00",
+      image: "/placeholder.svg", // Using placeholder if image var not available, else import
       available: true,
-      categoryId: "desserts",
+      categoryId: "milk-tea",
       tabType: "Menu Items",
     },
     {
-      id: "3",
-      name: "1-pc. Mushroom Pepper Steak w/ Egg Meal",
-      description: "Single piece version with egg.",
-      price: "$107.00",
-      image: "/placeholder.svg?height=80&width=80",
+      id: "milk3",
+      name: "Elachi Tea",
+      description: "Aromatic cardamom flavored milk tea.",
+      price: "₹20.00",
+      image: "/placeholder.svg",
       available: true,
-      categoryId: "desserts",
+      categoryId: "milk-tea",
       tabType: "Menu Items",
     },
     {
-      id: "4",
-      name: "Family Combo Meal",
-      description: "Perfect for sharing with family.",
-      price: "$250.00",
-      image: "/placeholder.svg?height=80&width=80",
+      id: "milk4",
+      name: "Ginger Tea",
+      description: "Refreshing ginger infused milk tea.",
+      price: "₹20.00",
+      image: "/placeholder.svg",
       available: true,
-      categoryId: "group-meals",
-      tabType: "Menu Items",
-    },
-    {
-      id: "5",
-      name: "Party Pack Special",
-      description: "Great for parties and gatherings.",
-      price: "$350.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "group-meals",
-      tabType: "Menu Items",
-    },
-    {
-      id: "6",
-      name: "Teriyaki Rice Bowl",
-      description: "Fresh rice bowl with teriyaki sauce.",
-      price: "$85.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "rice-bowls",
-      tabType: "Menu Items",
-    },
-    {
-      id: "7",
-      name: "Spring Rolls",
-      description: "Crispy spring rolls with dipping sauce.",
-      price: "$45.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "appetizers",
-      tabType: "Menu Items",
-    },
-    {
-      id: "8",
-      name: "Chicken Wings",
-      description: "Spicy chicken wings with ranch.",
-      price: "$65.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "appetizers",
+      categoryId: "milk-tea",
       tabType: "Menu Items",
     },
 
-    // Addons
+    // -- Hot Milk --
     {
-      id: "a1",
-      name: "Extra Cheese",
-      description: "Add extra cheese to your dish.",
-      price: "$10.00",
-      image: "/placeholder.svg?height=80&width=80",
+      id: "hot1",
+      name: "Manjal Milagu Milk",
+      description: "Turmeric and pepper infused hot milk.",
+      price: "₹25.00",
+      image: hotMilk01.src,
       available: true,
-      categoryId: "extra-toppings",
+      categoryId: "hot-milk",
+      tabType: "Menu Items",
+    },
+    {
+      id: "hot5",
+      name: "Hot Chocolate",
+      description: "Rich and creamy hot chocolate.",
+      price: "₹100.00",
+      image: "/placeholder.svg",
+      available: true,
+      categoryId: "hot-milk",
+      tabType: "Menu Items",
+    },
+
+    // -- Coffee --
+    {
+      id: "coffee1",
+      name: "Filter Coffee",
+      description: "Authentic South Indian filter coffee.",
+      price: "₹25.00",
+      image: filterCoffee.src,
+      available: true,
+      categoryId: "coffee",
+      tabType: "Menu Items",
+    },
+    {
+      id: "coffee2",
+      name: "Double Strong Coffee",
+      description: "Extra strong filter coffee.",
+      price: "₹30.00",
+      image: "/placeholder.svg",
+      available: true,
+      categoryId: "coffee",
+      tabType: "Menu Items",
+    },
+
+    // -- Quick Bites --
+    {
+      id: "qb2",
+      name: "Chicken Nuggets",
+      description: "Golden fried chicken nuggets.",
+      price: "₹80.00",
+      image: chickenNuggets.src,
+      available: true,
+      categoryId: "quick-bites",
+      tabType: "Menu Items",
+    },
+    {
+      id: "qb1",
+      name: "Cheese Corn Nuggets",
+      description: "Crispy cheese and corn nuggets.",
+      price: "₹80.00",
+      image: "/placeholder.svg",
+      available: true,
+      categoryId: "quick-bites",
+      tabType: "Menu Items",
+    },
+
+    // -- Maggi --
+    {
+      id: "maggi1",
+      name: "Plain Maggi",
+      description: "Classic plain Maggi noodles.",
+      price: "₹50.00",
+      image: plainMaggi.src,
+      available: true,
+      categoryId: "maggi",
+      tabType: "Menu Items",
+    },
+
+    // -- ADDONS --
+    {
+      id: "add1",
+      name: "Extra Sugar",
+      description: "Additional packet of sugar.",
+      price: "₹0.00",
+      image: "/placeholder.svg",
+      available: true,
+      categoryId: "sugar",
       tabType: "Addons",
     },
     {
-      id: "a2",
-      name: "Bacon Bits",
-      description: "Crispy bacon bits topping.",
-      price: "$15.00",
-      image: "/placeholder.svg?height=80&width=80",
+      id: "add2",
+      name: "Jaggery (Naatu Sakkarai)",
+      description: "Healthy cane sugar alternative.",
+      price: "₹5.00",
+      image: "/placeholder.svg",
       available: true,
-      categoryId: "extra-toppings",
-      tabType: "Addons",
-    },
-    {
-      id: "a3",
-      name: "Avocado Slices",
-      description: "Fresh avocado slices.",
-      price: "$12.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "extra-toppings",
-      tabType: "Addons",
-    },
-    {
-      id: "a4",
-      name: "Fried Onions",
-      description: "Crispy fried onions.",
-      price: "$8.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "extra-toppings",
-      tabType: "Addons",
-    },
-    {
-      id: "a5",
-      name: "Spicy Mayo",
-      description: "Creamy spicy mayonnaise.",
-      price: "$5.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "sauces",
-      tabType: "Addons",
-    },
-    {
-      id: "a6",
-      name: "Teriyaki Sauce",
-      description: "Sweet teriyaki glaze.",
-      price: "$5.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "sauces",
-      tabType: "Addons",
-    },
-    {
-      id: "a7",
-      name: "Garlic Aioli",
-      description: "Creamy garlic aioli.",
-      price: "$6.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "sauces",
-      tabType: "Addons",
-    },
-    {
-      id: "a8",
-      name: "French Fries",
-      description: "Crispy golden fries.",
-      price: "$25.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "sides",
-      tabType: "Addons",
-    },
-    {
-      id: "a9",
-      name: "Coleslaw",
-      description: "Fresh cabbage coleslaw.",
-      price: "$20.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "sides",
+      categoryId: "sugar",
       tabType: "Addons",
     },
 
-    // Sizes
+    // -- SIZES --
     {
-      id: "s1",
-      name: "Regular Size",
-      description: "Standard portion size.",
-      price: "$0.00",
-      image: "/placeholder.svg?height=80&width=80",
+      id: "sz1",
+      name: "Regular",
+      description: "Standard serving size.",
+      price: "₹0.00",
+      image: "/placeholder.svg",
       available: true,
-      categoryId: "portion-sizes",
+      categoryId: "cup-sizes",
       tabType: "Size",
     },
     {
-      id: "s2",
-      name: "Large Size",
-      description: "Upgrade to large portion.",
-      price: "$20.00",
-      image: "/placeholder.svg?height=80&width=80",
+      id: "sz2",
+      name: "Large",
+      description: "Extra quantity.",
+      price: "₹20.00",
+      image: "/placeholder.svg",
       available: true,
-      categoryId: "portion-sizes",
-      tabType: "Size",
-    },
-    {
-      id: "s3",
-      name: "Extra Large",
-      description: "Maximum portion size.",
-      price: "$35.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "portion-sizes",
-      tabType: "Size",
-    },
-    {
-      id: "s4",
-      name: "Small Drink",
-      description: "12oz drink size.",
-      price: "$15.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "drink-sizes",
-      tabType: "Size",
-    },
-    {
-      id: "s5",
-      name: "Medium Drink",
-      description: "16oz drink size.",
-      price: "$20.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "drink-sizes",
-      tabType: "Size",
-    },
-    {
-      id: "s6",
-      name: "Large Drink",
-      description: "24oz drink size.",
-      price: "$25.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "drink-sizes",
+      categoryId: "cup-sizes",
       tabType: "Size",
     },
 
-    // Ingredients
+    // -- COOKING REF (Sugar Levels) --
     {
-      id: "i1",
-      name: "Chicken Breast",
-      description: "Grilled chicken breast.",
-      price: "$30.00",
-      image: "/placeholder.svg?height=80&width=80",
+      id: "sl1",
+      name: "No Sugar",
+      description: "0% Sugar",
+      price: "₹0.00",
+      image: "/placeholder.svg",
       available: true,
-      categoryId: "proteins",
-      tabType: "Ingredients",
-    },
-    {
-      id: "i2",
-      name: "Beef Steak",
-      description: "Premium beef steak.",
-      price: "$45.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "proteins",
-      tabType: "Ingredients",
-    },
-    {
-      id: "i3",
-      name: "Salmon Fillet",
-      description: "Fresh salmon fillet.",
-      price: "$50.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "proteins",
-      tabType: "Ingredients",
-    },
-    {
-      id: "i4",
-      name: "Tofu",
-      description: "Organic tofu protein.",
-      price: "$20.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "proteins",
-      tabType: "Ingredients",
-    },
-    {
-      id: "i5",
-      name: "Shrimp",
-      description: "Fresh jumbo shrimp.",
-      price: "$40.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "proteins",
-      tabType: "Ingredients",
-    },
-    {
-      id: "i6",
-      name: "Mixed Vegetables",
-      description: "Seasonal vegetable mix.",
-      price: "$15.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "vegetables",
-      tabType: "Ingredients",
-    },
-    {
-      id: "i7",
-      name: "Broccoli",
-      description: "Fresh steamed broccoli.",
-      price: "$10.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "vegetables",
-      tabType: "Ingredients",
-    },
-    {
-      id: "i8",
-      name: "Bell Peppers",
-      description: "Colorful bell peppers.",
-      price: "$12.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "vegetables",
-      tabType: "Ingredients",
-    },
-    {
-      id: "i9",
-      name: "Mushrooms",
-      description: "Fresh button mushrooms.",
-      price: "$8.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "vegetables",
-      tabType: "Ingredients",
-    },
-    {
-      id: "i10",
-      name: "Carrots",
-      description: "Fresh sliced carrots.",
-      price: "$8.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "vegetables",
-      tabType: "Ingredients",
-    },
-    {
-      id: "i11",
-      name: "Spinach",
-      description: "Fresh baby spinach.",
-      price: "$10.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "vegetables",
-      tabType: "Ingredients",
-    },
-    {
-      id: "i12",
-      name: "Jasmine Rice",
-      description: "Fragrant jasmine rice.",
-      price: "$8.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "grains",
-      tabType: "Ingredients",
-    },
-    {
-      id: "i13",
-      name: "Brown Rice",
-      description: "Healthy brown rice.",
-      price: "$10.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "grains",
-      tabType: "Ingredients",
-    },
-    {
-      id: "i14",
-      name: "Quinoa",
-      description: "Protein-rich quinoa.",
-      price: "$15.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "grains",
-      tabType: "Ingredients",
-    },
-
-    // Cooking Reference
-    {
-      id: "r1",
-      name: "Mild",
-      description: "No spice, family friendly.",
-      price: "$0.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "spice-levels",
+      categoryId: "sugar-level",
       tabType: "Cooking Reference",
     },
     {
-      id: "r2",
-      name: "Medium Spicy",
-      description: "Moderate heat level.",
-      price: "$0.00",
-      image: "/placeholder.svg?height=80&width=80",
+      id: "sl2",
+      name: "Medium Sugar",
+      description: "50% Sugar",
+      price: "₹0.00",
+      image: "/placeholder.svg",
       available: true,
-      categoryId: "spice-levels",
+      categoryId: "sugar-level",
       tabType: "Cooking Reference",
     },
     {
-      id: "r3",
-      name: "Hot",
-      description: "Spicy kick for heat lovers.",
-      price: "$0.00",
-      image: "/placeholder.svg?height=80&width=80",
+      id: "sl3",
+      name: "High Sugar",
+      description: "100% Sugar",
+      price: "₹0.00",
+      image: "/placeholder.svg",
       available: true,
-      categoryId: "spice-levels",
-      tabType: "Cooking Reference",
-    },
-    {
-      id: "r4",
-      name: "Extra Hot",
-      description: "Maximum heat level.",
-      price: "$0.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "spice-levels",
-      tabType: "Cooking Reference",
-    },
-    {
-      id: "r5",
-      name: "Grilled",
-      description: "Cooked on the grill.",
-      price: "$0.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "cooking-methods",
-      tabType: "Cooking Reference",
-    },
-    {
-      id: "r6",
-      name: "Fried",
-      description: "Deep fried preparation.",
-      price: "$0.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "cooking-methods",
-      tabType: "Cooking Reference",
-    },
-    {
-      id: "r7",
-      name: "Steamed",
-      description: "Healthy steamed cooking.",
-      price: "$0.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "cooking-methods",
-      tabType: "Cooking Reference",
-    },
-    {
-      id: "r8",
-      name: "Vegetarian",
-      description: "No meat ingredients.",
-      price: "$0.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "dietary-options",
-      tabType: "Cooking Reference",
-    },
-    {
-      id: "r9",
-      name: "Vegan",
-      description: "No animal products.",
-      price: "$0.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "dietary-options",
-      tabType: "Cooking Reference",
-    },
-    {
-      id: "r10",
-      name: "Gluten-Free",
-      description: "No gluten ingredients.",
-      price: "$0.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "dietary-options",
-      tabType: "Cooking Reference",
-    },
-    {
-      id: "r11",
-      name: "Keto-Friendly",
-      description: "Low carb, high fat.",
-      price: "$0.00",
-      image: "/placeholder.svg?height=80&width=80",
-      available: true,
-      categoryId: "dietary-options",
+      categoryId: "sugar-level",
       tabType: "Cooking Reference",
     },
   ])
@@ -579,13 +294,13 @@ export function MenuInterface() {
 
       {/* Tabs */}
       <div className="p-3">
-        <div className="flex overflow-x-auto items-center gap-2">
+        <div className="flex overflow-x-auto items-center gap-2 scrollbar-hide">
           {["Menu Items", "Addons", "Size", "Ingredients", "Cooking Reference"].map((tab) => (
             <button
               key={tab}
               className={cn(
                 "px-5 py-2 text-sm rounded-full whitespace-nowrap transition-all duration-200",
-                activeTab === tab ? "bg-[#FF6B4A] text-white shadow-md" : "bg-gray-100 text-gray-600 hover:bg-gray-200",
+                activeTab === tab ? "bg-[#917c3d] text-white shadow-md" : "bg-gray-100 text-gray-600 hover:bg-gray-200",
               )}
               onClick={() => setActiveTab(tab)}
             >
@@ -597,138 +312,155 @@ export function MenuInterface() {
 
       {/* Menu Content */}
       <div className="flex-1 bg-white pb-24">
-        {activeCategories.map((category) => (
-          <div key={category.id} className="border-b">
-            {/* Category Header */}
-            <div
-              className="flex justify-between items-center px-4 py-4 cursor-pointer hover:bg-gray-50"
-              onClick={() => toggleCategory(category.id)}
-            >
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gray-100 rounded">
-                  <Image
-                    src="/placeholder.svg"
-                    alt="placeholder"
-                    width={48}
-                    height={48}
-                    className="w-full h-full object-cover rounded opacity-50"
-                  />
+        {activeCategories.length === 0 ? (
+             <div className="text-center py-10 text-gray-500">No categories found for this section.</div>
+        ) : (
+            activeCategories.map((category) => (
+            <div key={category.id} className="border-b">
+                {/* Category Header */}
+                <div
+                className="flex justify-between items-center px-4 py-4 cursor-pointer hover:bg-gray-50"
+                onClick={() => toggleCategory(category.id)}
+                >
+                <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-gray-100 rounded overflow-hidden">
+                    {/* Just using a generic placeholder or the first item's image for the category icon */}
+                    <div className="w-full h-full bg-[#917c3d]/20 flex items-center justify-center text-[#917c3d] font-bold text-xs">
+                        {category.name.substring(0,2).toUpperCase()}
+                    </div>
+                    </div>
+                    <div className="flex flex-col">
+                    <span className="text-sm font-semibold">{category.name}</span>
+                    <span className="text-xs text-[#917c3d]">Edit Category</span>
+                    </div>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-sm font-semibold">{category.name}</span>
-                  <span className="text-xs text-[#FF6B4A]">Edit Category</span>
+                <div className="flex items-center space-x-2">
+                    <span className="text-sm text-gray-500">
+                    {activeItems.filter(i => i.categoryId === category.id).length} Items
+                    </span>
+                    {category.isOpen ? (
+                    <ChevronUp className="w-5 h-5 text-gray-400" />
+                    ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-400" />
+                    )}
                 </div>
-              </div>
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-500">
-                  {category.itemCount} {category.itemCount === 1 ? "Item" : "Items"}
-                </span>
-                {category.isOpen ? (
-                  <ChevronUp className="w-5 h-5 text-gray-400" />
-                ) : (
-                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                </div>
+
+                {/* Items under category */}
+                <AnimatePresence>
+                {category.isOpen && (
+                    <motion.div 
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                    >
+                    {activeItems
+                        .filter((item) => item.categoryId === category.id)
+                        .map((item) => (
+                        <div key={item.id} className="bg-white px-4 py-4 border-t border-gray-100">
+                            <div className="flex">
+                            <div className="flex-shrink-0 mr-4">
+                                <Image
+                                src={item.image || "/placeholder.svg"}
+                                alt={item.name}
+                                width={80}
+                                height={80}
+                                className="rounded-lg object-cover h-20 w-20"
+                                />
+                            </div>
+                            <div className="flex-1">
+                                <h4 className="font-semibold text-sm text-gray-800">{item.name}</h4>
+                                <p className="text-xs text-gray-500 mt-1 mb-2 line-clamp-2">{item.description}</p>
+                                <p className="font-bold text-sm text-[#917c3d]">{item.price}</p>
+                            </div>
+                            <div className="flex flex-col justify-between items-end space-y-2">
+                                <button className="w-8 h-8 bg-[#917c3d] rounded-full flex items-center justify-center text-white hover:bg-[#7a6833] transition-colors">
+                                <Edit className="w-4 h-4" />
+                                </button>
+                                <button className="w-8 h-8 text-gray-400 hover:text-red-500 transition-colors">
+                                <Trash2 className="w-4 h-4" />
+                                </button>
+                            </div>
+                            </div>
+
+                            <div className="flex items-center mt-3">
+                            <div
+                                className={cn(
+                                "w-10 h-5 rounded-full p-0.5 flex items-center cursor-pointer transition-colors duration-300",
+                                item.available ? "bg-[#917c3d]" : "bg-gray-300",
+                                )}
+                                onClick={() => toggleAvailability(item.id)}
+                            >
+                                <div
+                                className={cn(
+                                    "w-4 h-4 bg-white rounded-full transform transition-transform duration-300",
+                                    item.available ? "translate-x-5" : "translate-x-0",
+                                )}
+                                />
+                            </div>
+                            <span className="ml-2 text-xs font-medium text-gray-600">
+                                {item.available ? "Available" : "Unavailable"}
+                            </span>
+                            </div>
+                        </div>
+                        ))}
+                    
+                    {/* Empty Category Message */}
+                    {activeItems.filter((item) => item.categoryId === category.id).length === 0 && (
+                        <div className="px-4 py-6 text-center text-gray-400 text-sm italic bg-gray-50">
+                            No items added to this category yet.
+                        </div>
+                    )}
+                    </motion.div>
                 )}
-              </div>
+                </AnimatePresence>
             </div>
-
-            {/* Items under category */}
-            {category.isOpen &&
-              activeItems
-                .filter((item) => item.categoryId === category.id)
-                .map((item) => (
-                  <div key={item.id} className="bg-white px-4 py-4 border-t">
-                    <div className="flex">
-                      <div className="flex-shrink-0 mr-4">
-                        <Image
-                          src={item.image || "/placeholder.svg"}
-                          alt={item.name}
-                          width={80}
-                          height={80}
-                          className="rounded object-cover"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-sm">{item.name}</h4>
-                        <p className="text-xs text-gray-500 mt-1 mb-2">{item.description}</p>
-                        <p className="font-medium text-sm">{item.price}</p>
-                      </div>
-                      <div className="flex flex-col justify-between items-end space-y-2">
-                        <button className="w-8 h-8 bg-[#ff734d] rounded-full flex items-center justify-center text-white">
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button className="w-8 h-8 text-gray-400">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center">
-                      <div
-                        className={cn(
-                          "w-10 h-5 rounded-full p-0.5 flex items-center cursor-pointer transition-colors duration-300",
-                          item.available ? "bg-[#ff734d]" : "bg-gray-300",
-                        )}
-                        onClick={() => toggleAvailability(item.id)}
-                      >
-                        <div
-                          className={cn(
-                            "w-4 h-4 bg-white rounded-full transform transition-transform duration-300",
-                            item.available ? "translate-x-5" : "translate-x-0",
-                          )}
-                        />
-                      </div>
-                      <span className="ml-2 text-sm text-gray-600">Available</span>
-                    </div>
-                  </div>
-                ))}
-
-            {/* Empty Category */}
-            {category.isOpen && activeItems.filter((item) => item.categoryId === category.id).length === 0 && (
-              <div className="px-4 py-4 text-center text-[#ff734d] text-sm">No items available</div>
-            )}
-          </div>
-        ))}
+            ))
+        )}
       </div>
 
       {/* Floating Add Button */}
-<div className="fixed bottom-20 right-4 z-20 flex flex-col items-end">
-  <div className="relative">
-    <AnimatePresence>
-      {openPopup && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0 }}
-          transition={{ duration: 0.3 }}
-          className="absolute bottom-12 right-0 w-34 space-y-3 p-2 origin-bottom-right"
-        >
-          <button className="w-full py-2 px-4 rounded-full bg-[#ff734d] text-white text-sm">
-            Add Category
-          </button>
-          <button className="w-full py-2 px-4 rounded-full bg-[#ff734d] text-white text-sm">
-            Add Item
-          </button>
-          <button className="w-full py-2 px-4 rounded-full bg-[#ff734d] text-white text-sm">
-            Sort Category
-          </button>
-          <button className="w-full py-2 px-4 rounded-full bg-[#ff734d] text-white text-sm">
-            Sort Item
-          </button>
-        </motion.div>
-      )}
-    </AnimatePresence>
+      <div className="fixed bottom-20 right-4 z-20 flex flex-col items-end">
+        <div className="relative">
+          <AnimatePresence>
+            {openPopup && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0 }}
+                transition={{ duration: 0.2 }}
+                className="absolute bottom-14 right-0 w-40 space-y-2 origin-bottom-right"
+              >
+                <button className="w-full py-2 px-4 rounded-xl bg-white text-[#917c3d] text-sm font-semibold shadow-lg border border-gray-100 hover:bg-gray-50 text-right">
+                  Add Category
+                </button>
+                <button className="w-full py-2 px-4 rounded-xl bg-[#917c3d] text-white text-sm font-semibold shadow-lg hover:bg-[#7a6833] text-right">
+                  Add Item
+                </button>
+                <button className="w-full py-2 px-4 rounded-xl bg-white text-gray-600 text-sm font-semibold shadow-lg border border-gray-100 hover:bg-gray-50 text-right">
+                  Sort Items
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-    <button
-      onClick={() => setOpenPopup(!openPopup)}
-      className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center"
-    >
-      <motion.div animate={{ rotate: openPopup ? 225 : 0 }} transition={{ duration: 0.2 }}>
-        <Plus size={28} />
-      </motion.div>
-    </button>
-  </div>
-</div>
-
+          <button
+            onClick={() => setOpenPopup(!openPopup)}
+            className={cn(
+                "w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-colors",
+                openPopup ? "bg-gray-800 text-white" : "bg-[#917c3d] text-white"
+            )}
+          >
+            <motion.div 
+                animate={{ rotate: openPopup ? 45 : 0 }} 
+                transition={{ duration: 0.2 }}
+            >
+              <Plus size={24} />
+            </motion.div>
+          </button>
+        </div>
+      </div>
 
       <Footer />
     </div>
