@@ -1,149 +1,152 @@
-"use client";
+"use client"
 
-import type React from "react";
-import { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
-import gifone from "@/app/assets/gif/1.gif";
-import profileone from "@/app/assets/onboarding/1.png";
-import profiletwo from "@/app/assets/onboarding/2.png";
-import profilethree from "@/app/assets/onboarding/3.png";
-import design from "@/app/assets/onboarding/line-design.svg";
+import { useState, useEffect, useRef } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import Image from "next/image"
 
-export default function OnboardingPage() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [touchStart, setTouchStart] = useState(0);
-  const [touchEnd, setTouchEnd] = useState(0);
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { setUser } from "@/lib/auth"
 
-  const slides = [
-    {
-      poster: profileone,
-      title: "Now Discuss Anything",
-      description:
-        "Create conferences, invite people, Discuss any topic together.",
-    },
-    {
-      poster: profiletwo,
-      title: "See Each Other Anytime",
-      description:
-        "Get to see each other anywhere, anytime. Enjoy safe, discreet messaging",
-    },
-    {
-      poster: profilethree,
-      title: "Plan Anything & Anywhere",
-      description:
-        "Just call your group and plan your trip or meeting at any time.",
-    },
-  ];
+import PhoneIllustration from "@/app/assets/starbucks/phone-pic.png"
 
-  const nextSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-  }, [slides.length]);
+export default function LoginPage() {
+  const router = useRouter()
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
-  };
+  /* ---------------- STATES ---------------- */
+  const [isSplashLoading, setIsSplashLoading] = useState(true)
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStart(e.targetTouches[0].clientX);
-  };
+  const [name, setName] = useState("")
+  const [mobile, setMobile] = useState("")
+  const [otp, setOtp] = useState("")
+  const [showOtpField, setShowOtpField] = useState(false)
+  const [isVerifying, setIsVerifying] = useState(false)
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
-  };
+  const mobileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleTouchEnd = () => {
-    if (touchStart - touchEnd > 50) {
-      nextSlide();
-    }
-    if (touchStart - touchEnd < -50) {
-      prevSlide();
-    }
-  };
-
+  /* ---------------- SPLASH LOADING ---------------- */
   useEffect(() => {
-    const interval = setInterval(() => {
-      nextSlide();
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [nextSlide]);
+    const timer = setTimeout(() => {
+      setIsSplashLoading(false)
+    }, 2000)
 
-  return (
-    <section
-      className="min-h-screen bg-white overflow-hidden"
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
-      <div className="relative h-screen">
-        <div className="h-full">
-          {slides.map((slide, index) => (
-            <div
-              key={index}
-              className={`absolute inset-0 transition-opacity duration-500 ease-in-out ${
-                index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
-              }`}
-            >
-              <div className="flex flex-col h-full">
-                {/* GIF shown for all slides */}
-                <div className="w-full h-[40vh] relative overflow-hidden">
-                  <Image
-                    src={gifone}
-                    alt="Onboarding animation"
-                    width={400}
-                    height={300}
-                    className="w-full object-cover"
-                  />
-                </div>
+    return () => clearTimeout(timer)
+  }, [])
 
-                <div className="relative px-4">
-                  <div className="bg-white rounded-t-3xl pt-4 pb-4 relative">
-                    <div className="relative mx-auto max-w-[500px]">
-                      <div className="relative mb-8">
-                        <Image
-                          src={slide.poster}
-                          alt="Poster"
-                          width={300}
-                          height={300}
-                          className="mx-auto"
-                        />
-                      </div>
-                      <div className="text-center px-4">
-                        <h2 className="text-2xl font-bold mb-2">{slide.title}</h2>
-                        <div className="mb-3">
-                          <Image
-                            src={design}
-                            alt="border-design"
-                            width={150}
-                            height={10}
-                            className="mx-auto"
-                          />
-                        </div>
-                        <h5 className="text-gray-600 text-sm mb-6">
-                          {slide.description}
-                        </h5>
-                        <Link href="/login" className="inline-block pb-8">
-                          <div className="w-14 h-14 rounded-full bg-[#ff734d] flex items-center justify-center shadow-lg">
-                            <ChevronRight className="text-white w-8 h-8" />
-                          </div>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+  /* ---------------- HANDLERS ---------------- */
+  const handleSendOtp = () => {
+    if (name.trim() && mobile.length === 10) {
+      setShowOtpField(true)
+    }
+  }
+
+  const handleVerifyOTP = () => {
+    if (otp.length !== 6) return
+
+    setIsVerifying(true)
+
+    setTimeout(() => {
+      setUser({
+        id: crypto.randomUUID(),
+        name,
+        mobile,
+        role: "retailer",
+      })
+
+      router.push("/dashboard")
+    }, 1500)
+  }
+
+  /* ---------------- SPLASH SCREEN ---------------- */
+  if (isSplashLoading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-[#2c375d] to-[#2c375d]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin" />
+          <p className="text-white text-sm tracking-wide">Loading...</p>
         </div>
-
-        <button
-          className="absolute right-4 top-1/2 z-20 transform -translate-y-1/2 bg-white/70 rounded-full p-2 shadow-md hidden md:block"
-          onClick={nextSlide}
-        >
-          <ChevronRight className="w-6 h-6 text-teal-500" />
-        </button>
       </div>
-    </section>
-  );
+    )
+  }
+
+  /* ---------------- LOGIN SCREEN ---------------- */
+  return (
+    <div className="fixed inset-0 bg-gradient-to-br from-[#2c375d] to-[#2c375d]">
+      {/* Background Illustration */}
+      <div
+        className="absolute inset-0 bg-no-repeat bg-center bg-contain opacity-20"
+        style={{ backgroundImage: `url(${PhoneIllustration.src})` }}
+      />
+
+      {/* Welcome Text */}
+      <div className="text-center text-white pt-20">
+        <h1 className="text-4xl font-bold">Welcome</h1>
+        <h2 className="text-3xl font-bold -mt-1">Back</h2>
+      </div>
+
+      {/* Bottom Form */}
+      <div className="fixed bottom-0 w-full bg-white rounded-t-3xl px-6 py-8">
+        <h3 className="text-xl font-semibold mb-4">Sign in</h3>
+
+        <div className="space-y-5">
+          {/* NAME FIELD */}
+          <Input
+            placeholder="Enter your name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+
+          {/* MOBILE FIELD */}
+          <Input
+            ref={mobileInputRef}
+            placeholder="Enter mobile number"
+            value={mobile}
+            onChange={(e) =>
+              setMobile(e.target.value.replace(/\D/g, "").slice(0, 10))
+            }
+          />
+
+          {/* SEND OTP */}
+          {name && mobile.length === 10 && !showOtpField && (
+            <button
+              onClick={handleSendOtp}
+              className="text-primary font-semibold text-sm"
+            >
+              Send OTP
+            </button>
+          )}
+
+          {/* OTP FIELD */}
+          {showOtpField && (
+            <>
+              <Input
+                placeholder="Enter 6-digit OTP"
+                value={otp}
+                onChange={(e) =>
+                  setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
+                }
+                className="tracking-widest text-center"
+              />
+
+              <Button
+                onClick={handleVerifyOTP}
+                disabled={otp.length !== 6 || isVerifying}
+                className="w-full"
+              >
+                {isVerifying ? "Verifying..." : "Verify & Login"}
+              </Button>
+            </>
+          )}
+
+          <p className="text-center text-sm">
+            Don’t have an account?{" "}
+            <Link href="/signup" className="font-medium underline">
+              Sign up
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  )
 }

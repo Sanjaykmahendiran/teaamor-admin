@@ -496,7 +496,7 @@ export default function CartPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#917c3d]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37]"></div>
       </div>
     )
   }
@@ -523,7 +523,7 @@ export default function CartPage() {
           <p className="text-gray-600 mb-8">Add some delicious items to get started!</p>
           <Button
             onClick={() => router.back()}
-            className="bg-[#917c3d] hover:bg-[#e55a2b] text-white px-8 py-3 rounded-lg font-medium"
+            className="bg-[#D4AF37] hover:bg-[#e55a2b] text-white px-8 py-3 rounded-lg font-medium"
           >
             Browse Menu
           </Button>
@@ -576,7 +576,7 @@ export default function CartPage() {
                           className="object-cover rounded-lg"
                         />
                         {item.badge && (
-                          <div className="absolute -top-1 -right-1 bg-[#917c3d] text-white text-xs font-bold px-1 py-0.5 rounded-full text-[10px]">
+                          <div className="absolute -top-1 -right-1 bg-[#D4AF37] text-white text-xs font-bold px-1 py-0.5 rounded-full text-[10px]">
                             {item.badge}
                           </div>
                         )}
@@ -586,7 +586,7 @@ export default function CartPage() {
                         <h3 className="font-semibold text-gray-800 truncate">{item.name}</h3>
                         <p className="text-sm text-gray-600 truncate">{item.description}</p>
                         <div className="flex items-center space-x-2 mt-1">
-                          <span className="font-bold text-[#917c3d]">
+                          <span className="font-bold text-[#D4AF37]">
                             ₹{(item.discountedPrice || item.price).toFixed(2)}
                           </span>
                           {item.discountedPrice && (
@@ -601,7 +601,7 @@ export default function CartPage() {
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-[#917c3d]"
+                            className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-[#D4AF37]"
                           >
                             <Minus className="w-4 h-4" />
                           </motion.button>
@@ -610,7 +610,7 @@ export default function CartPage() {
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-[#917c3d]"
+                            className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-[#D4AF37]"
                           >
                             <Plus className="w-4 h-4" />
                           </motion.button>
@@ -639,13 +639,13 @@ export default function CartPage() {
                   className={cn(
                     "p-4 rounded-lg border-2 cursor-pointer transition-colors",
                     selectedAddress === "home"
-                      ? "border-[#917c3d] bg-orange-50"
+                      ? "border-[#D4AF37] bg-orange-50"
                       : "border-gray-200 hover:border-gray-300",
                   )}
                   onClick={() => setSelectedAddress("home")}
                 >
                   <div className="flex items-center space-x-3">
-                    <MapPin className="w-5 h-5 text-[#917c3d]" />
+                    <MapPin className="w-5 h-5 text-[#D4AF37]" />
                     <div>
                       <p className="font-medium text-gray-800">Home</p>
                       <p className="text-sm text-gray-600">123 Main Street, City, State 12345</p>
@@ -656,13 +656,13 @@ export default function CartPage() {
                   className={cn(
                     "p-4 rounded-lg border-2 cursor-pointer transition-colors",
                     selectedAddress === "work"
-                      ? "border-[#917c3d] bg-orange-50"
+                      ? "border-[#D4AF37] bg-orange-50"
                       : "border-gray-200 hover:border-gray-300",
                   )}
                   onClick={() => setSelectedAddress("work")}
                 >
                   <div className="flex items-center space-x-3">
-                    <MapPin className="w-5 h-5 text-[#917c3d]" />
+                    <MapPin className="w-5 h-5 text-[#D4AF37]" />
                     <div>
                       <p className="font-medium text-gray-800">Work</p>
                       <p className="text-sm text-gray-600">456 Business Ave, City, State 12345</p>
@@ -686,13 +686,13 @@ export default function CartPage() {
                     placeholder="Enter promo code"
                     value={promoCode}
                     onChange={(e) => setPromoCode(e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#917c3d] focus:border-transparent"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
                     disabled={promoApplied}
                   />
                   <Button
                     onClick={applyPromoCode}
                     disabled={promoApplied || !promoCode}
-                    className="bg-[#917c3d] hover:bg-[#e55a2b] text-white px-4 py-2 rounded-lg font-medium disabled:opacity-50"
+                    className="bg-[#D4AF37] hover:bg-[#e55a2b] text-white px-4 py-2 rounded-lg font-medium disabled:opacity-50"
                   >
                     Apply
                   </Button>
@@ -722,14 +722,14 @@ export default function CartPage() {
                 <div className="border-t border-gray-200 pt-3">
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total</span>
-                    <span className="text-[#917c3d]">₹{total.toFixed(2)}</span>
+                    <span className="text-[#D4AF37]">₹{total.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
 
               {/* Delivery Time */}
               {/* <div className="flex items-center space-x-2 mb-6 p-3 bg-orange-50 rounded-lg">
-                <Clock className="w-5 h-5 text-[#917c3d]" />
+                <Clock className="w-5 h-5 text-[#D4AF37]" />
                 <span className="text-sm font-medium text-gray-800">Estimated delivery: 25-35 mins</span>
               </div> */}
 
@@ -741,36 +741,36 @@ export default function CartPage() {
                     className={cn(
                       "flex items-center space-x-3 p-3 rounded-lg border-2 cursor-pointer transition-colors",
                       selectedPayment === "card"
-                        ? "border-[#917c3d] bg-orange-50"
+                        ? "border-[#D4AF37] bg-orange-50"
                         : "border-gray-200 hover:border-gray-300",
                     )}
                     onClick={() => setSelectedPayment("card")}
                   >
-                    <CreditCard className="w-5 h-5 text-[#917c3d]" />
+                    <CreditCard className="w-5 h-5 text-[#D4AF37]" />
                     <span className="font-medium">Credit/Debit Card</span>
                   </div>
                   <div
                     className={cn(
                       "flex items-center space-x-3 p-3 rounded-lg border-2 cursor-pointer transition-colors",
                       selectedPayment === "wallet"
-                        ? "border-[#917c3d] bg-orange-50"
+                        ? "border-[#D4AF37] bg-orange-50"
                         : "border-gray-200 hover:border-gray-300",
                     )}
                     onClick={() => setSelectedPayment("wallet")}
                   >
-                    <Wallet className="w-5 h-5 text-[#917c3d]" />
+                    <Wallet className="w-5 h-5 text-[#D4AF37]" />
                     <span className="font-medium">Digital Wallet</span>
                   </div>
                   <div
                     className={cn(
                       "flex items-center space-x-3 p-3 rounded-lg border-2 cursor-pointer transition-colors",
                       selectedPayment === "cash"
-                        ? "border-[#917c3d] bg-orange-50"
+                        ? "border-[#D4AF37] bg-orange-50"
                         : "border-gray-200 hover:border-gray-300",
                     )}
                     onClick={() => setSelectedPayment("cash")}
                   >
-                    <Smartphone className="w-5 h-5 text-[#917c3d]" />
+                    <Smartphone className="w-5 h-5 text-[#D4AF37]" />
                     <span className="font-medium">Cash on Delivery</span>
                   </div>
                 </div>
@@ -780,7 +780,7 @@ export default function CartPage() {
               <Button
                 onClick={handleCheckout}
                 disabled={isCheckingOut}
-                className="w-full bg-[#917c3d] hover:bg-[#917c3d] text-white py-4 rounded-lg font-medium text-lg disabled:opacity-50"
+                className="w-full bg-[#D4AF37] hover:bg-[#D4AF37] text-white py-4 rounded-lg font-medium text-lg disabled:opacity-50"
               >
                 {isCheckingOut ? (
                   <div className="flex items-center justify-center space-x-2">

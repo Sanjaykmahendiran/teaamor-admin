@@ -300,7 +300,7 @@ export function MenuInterface() {
               key={tab}
               className={cn(
                 "px-5 py-2 text-sm rounded-full whitespace-nowrap transition-all duration-200",
-                activeTab === tab ? "bg-[#917c3d] text-white shadow-md" : "bg-gray-100 text-gray-600 hover:bg-gray-200",
+                activeTab === tab ? "bg-[#D4AF37] text-white shadow-md" : "bg-gray-100 text-gray-600 hover:bg-gray-200",
               )}
               onClick={() => setActiveTab(tab)}
             >
@@ -325,13 +325,13 @@ export function MenuInterface() {
                 <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-gray-100 rounded overflow-hidden">
                     {/* Just using a generic placeholder or the first item's image for the category icon */}
-                    <div className="w-full h-full bg-[#917c3d]/20 flex items-center justify-center text-[#917c3d] font-bold text-xs">
+                    <div className="w-full h-full bg-[#D4AF37]/20 flex items-center justify-center text-[#D4AF37] font-bold text-xs">
                         {category.name.substring(0,2).toUpperCase()}
                     </div>
                     </div>
                     <div className="flex flex-col">
                     <span className="text-sm font-semibold">{category.name}</span>
-                    <span className="text-xs text-[#917c3d]">Edit Category</span>
+                    <span className="text-xs text-[#D4AF37]">Edit Category</span>
                     </div>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -372,10 +372,10 @@ export function MenuInterface() {
                             <div className="flex-1">
                                 <h4 className="font-semibold text-sm text-gray-800">{item.name}</h4>
                                 <p className="text-xs text-gray-500 mt-1 mb-2 line-clamp-2">{item.description}</p>
-                                <p className="font-bold text-sm text-[#917c3d]">{item.price}</p>
+                                <p className="font-bold text-sm text-[#D4AF37]">{item.price}</p>
                             </div>
                             <div className="flex flex-col justify-between items-end space-y-2">
-                                <button className="w-8 h-8 bg-[#917c3d] rounded-full flex items-center justify-center text-white hover:bg-[#7a6833] transition-colors">
+                                <button className="w-8 h-8 bg-[#D4AF37] rounded-full flex items-center justify-center text-white hover:bg-[#7a6833] transition-colors">
                                 <Edit className="w-4 h-4" />
                                 </button>
                                 <button className="w-8 h-8 text-gray-400 hover:text-red-500 transition-colors">
@@ -388,7 +388,7 @@ export function MenuInterface() {
                             <div
                                 className={cn(
                                 "w-10 h-5 rounded-full p-0.5 flex items-center cursor-pointer transition-colors duration-300",
-                                item.available ? "bg-[#917c3d]" : "bg-gray-300",
+                                item.available ? "bg-[#D4AF37]" : "bg-gray-300",
                                 )}
                                 onClick={() => toggleAvailability(item.id)}
                             >
@@ -432,10 +432,10 @@ export function MenuInterface() {
                 transition={{ duration: 0.2 }}
                 className="absolute bottom-14 right-0 w-40 space-y-2 origin-bottom-right"
               >
-                <button className="w-full py-2 px-4 rounded-xl bg-white text-[#917c3d] text-sm font-semibold shadow-lg border border-gray-100 hover:bg-gray-50 text-right">
+                <button className="w-full py-2 px-4 rounded-xl bg-white text-[#D4AF37] text-sm font-semibold shadow-lg border border-gray-100 hover:bg-gray-50 text-right">
                   Add Category
                 </button>
-                <button className="w-full py-2 px-4 rounded-xl bg-[#917c3d] text-white text-sm font-semibold shadow-lg hover:bg-[#7a6833] text-right">
+                <button className="w-full py-2 px-4 rounded-xl bg-[#D4AF37] text-white text-sm font-semibold shadow-lg hover:bg-[#7a6833] text-right">
                   Add Item
                 </button>
                 <button className="w-full py-2 px-4 rounded-xl bg-white text-gray-600 text-sm font-semibold shadow-lg border border-gray-100 hover:bg-gray-50 text-right">
@@ -449,7 +449,7 @@ export function MenuInterface() {
             onClick={() => setOpenPopup(!openPopup)}
             className={cn(
                 "w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-colors",
-                openPopup ? "bg-gray-800 text-white" : "bg-[#917c3d] text-white"
+                openPopup ? "bg-gray-800 text-white" : "bg-[#D4AF37] text-white"
             )}
           >
             <motion.div 

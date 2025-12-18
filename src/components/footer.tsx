@@ -23,8 +23,8 @@ export default function Footer() {
                     const isActive = pathname === href;
                     return (
                         <Link key={href} href={href} className="flex flex-col items-center">
-                            <Icon className={`h-5 w-5 ${isActive ? "text-[#917c3d]" : "text-gray-400"}`} />
-                            <span className={`text-xs ${isActive ? "text-[#917c3d]" : "text-gray-400"}`}>
+                            <Icon className={`h-5 w-5 ${isActive ? "text-[#D4AF37]" : "text-gray-400"}`} />
+                            <span className={`text-xs ${isActive ? "text-[#D4AF37]" : "text-gray-400"}`}>
                                 {label}
                             </span>
                         </Link>

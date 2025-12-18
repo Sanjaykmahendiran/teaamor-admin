@@ -94,7 +94,7 @@ export default function DishCard(props: DishCardProps) {
         onClick={handleCardClick}
       >
         {badge && (
-          <div className="absolute left-2 top-2 z-10 rounded-full bg-[#917c3d] px-2 py-1 text-xs font-bold text-white">
+          <div className="absolute left-2 top-2 z-10 rounded-full bg-[#D4AF37] px-2 py-1 text-xs font-bold text-white">
             {badge}
           </div>
         )}
@@ -109,7 +109,7 @@ export default function DishCard(props: DishCardProps) {
           <Heart
             className={cn(
               "h-5 w-5",
-              isFavorite ? "fill-[#917c3d] text-[#917c3d]" : "text-gray-400",
+              isFavorite ? "fill-[#D4AF37] text-[#D4AF37]" : "text-gray-400",
             )}
           />
         </motion.button>
@@ -134,7 +134,7 @@ export default function DishCard(props: DishCardProps) {
               <div className="mt-2 flex items-center">
                 {discountedPrice ? (
                   <>
-                    <span className="font-bold text-[#917c3d]">
+                    <span className="font-bold text-[#D4AF37]">
                       {discountedPrice.toFixed(2)}
                     </span>
                     <span className="ml-2 text-sm text-gray-500 line-through">
@@ -142,7 +142,7 @@ export default function DishCard(props: DishCardProps) {
                     </span>
                   </>
                 ) : (
-                  <span className="font-bold text-[#917c3d]">
+                  <span className="font-bold text-[#D4AF37]">
                     {price.toFixed(2)}
                   </span>
                 )}
@@ -181,7 +181,7 @@ export default function DishCard(props: DishCardProps) {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => addToCart(id)}
-                  className="rounded-lg border-2 border-[#917c3d] px-4 py-2 text-sm font-medium text-[#917c3d] transition-colors hover:bg-[#917c3d] hover:text-white"
+                  className="rounded-lg border-2 border-[#D4AF37] px-4 py-2 text-sm font-medium text-[#D4AF37] transition-colors hover:bg-[#D4AF37] hover:text-white"
                 >
                   ADD
                 </motion.button>
@@ -189,7 +189,7 @@ export default function DishCard(props: DishCardProps) {
                 <motion.div
                   initial={{ scale: 0.8 }}
                   animate={{ scale: 1 }}
-                  className="flex min-w-[100px] items-center justify-between rounded-lg bg-[#917c3d] p-2 text-white"
+                  className="flex min-w-[100px] items-center justify-between rounded-lg bg-[#D4AF37] p-2 text-white"
                 >
                   <motion.button
                     whileHover={{ scale: 1.1 }}
@@ -230,7 +230,7 @@ export default function DishCard(props: DishCardProps) {
       onClick={handleCardClick}
     >
       {badge && (
-        <div className="absolute left-3 top-3 z-10 rounded-full bg-[#917c3d] px-2.5 py-1 text-xs font-semibold text-white shadow-sm">
+        <div className="absolute left-3 top-3 z-10 rounded-full bg-[#D4AF37] px-2.5 py-1 text-xs font-semibold text-white shadow-sm">
           {badge}
         </div>
       )}
@@ -245,7 +245,7 @@ export default function DishCard(props: DishCardProps) {
         <Heart
           className={cn(
             "h-5 w-5",
-            isFavorite ? "fill-[#917c3d] text-[#917c3d]" : "text-gray-400",
+            isFavorite ? "fill-[#D4AF37] text-[#D4AF37]" : "text-gray-400",
           )}
         />
       </motion.button>
@@ -292,7 +292,7 @@ export default function DishCard(props: DishCardProps) {
           <div className="space-x-2 text-sm">
             {discountedPrice ? (
               <>
-                <span className="font-semibold text-[#917c3d]">
+                <span className="font-semibold text-[#D4AF37]">
                   ₹{discountedPrice.toFixed(2)}
                 </span>
                 <span className="text-xs text-gray-400 line-through">
@@ -300,7 +300,7 @@ export default function DishCard(props: DishCardProps) {
                 </span>
               </>
             ) : (
-              <span className="font-semibold text-[#917c3d]">
+              <span className="font-semibold text-[#D4AF37]">
                 ₹{price.toFixed(2)}
               </span>
             )}
@@ -321,7 +321,7 @@ export default function DishCard(props: DishCardProps) {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => addToCart(id)}
-              className="flex h-9 w-full items-center justify-center rounded-lg border border-[#917c3d] text-xs font-semibold text-[#917c3d] transition-colors hover:bg-[#917c3d] hover:text-white"
+              className="flex h-9 w-full items-center justify-center rounded-lg border border-[#D4AF37] text-xs font-semibold text-[#D4AF37] transition-colors hover:bg-[#D4AF37] hover:text-white"
             >
               ADD
             </motion.button>
@@ -329,7 +329,7 @@ export default function DishCard(props: DishCardProps) {
             <motion.div
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
-              className="flex h-9 items-center justify-between rounded-lg bg-[#917c3d] px-2 text-white"
+              className="flex h-9 items-center justify-between rounded-lg bg-[#D4AF37] px-2 text-white"
             >
               <motion.button
                 whileHover={{ scale: 1.1 }}

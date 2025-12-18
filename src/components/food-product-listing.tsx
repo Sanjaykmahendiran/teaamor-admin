@@ -168,7 +168,7 @@ export default function FoodProductListing() {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => router.push("/cart")}
-            className="relative rounded-full bg-[#917c3d] p-4 text-white shadow-lg"
+            className="relative rounded-full bg-[#D4AF37] p-4 text-white shadow-lg"
           >
             <ShoppingCart className="h-6 w-6" />
             {getTotalCartItems() > 0 && (
@@ -215,7 +215,7 @@ export default function FoodProductListing() {
                     <X className="h-5 w-5" />
                   </button>
                   {selectedProduct.badge && (
-                    <div className="absolute left-4 top-4 rounded-full bg-[#917c3d] px-3 py-1 text-xs font-bold text-white">
+                    <div className="absolute left-4 top-4 rounded-full bg-[#D4AF37] px-3 py-1 text-xs font-bold text-white">
                       {selectedProduct.badge}
                     </div>
                   )}
@@ -224,7 +224,7 @@ export default function FoodProductListing() {
                 <div className="p-6">
                   <div className="mb-2 flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <span className="text-2xl font-bold text-[#917c3d]">
+                      <span className="text-2xl font-bold text-[#D4AF37]">
                         {(
                           selectedProduct.discountedPrice || selectedProduct.price
                         ).toFixed(2)}
@@ -291,12 +291,12 @@ export default function FoodProductListing() {
                     {getProductQuantity(selectedProduct.id) === 0 ? (
                       <Button
                         onClick={() => addToCart(selectedProduct.id)}
-                        className="w-full rounded-lg bg-[#917c3d] py-6 font-medium text-white hover:bg-[#e55a2b]"
+                        className="w-full rounded-lg bg-[#D4AF37] py-6 font-medium text-white hover:bg-[#e55a2b]"
                       >
                         Add to Cart
                       </Button>
                     ) : (
-                      <div className="flex items-center justify-between rounded-lg bg-[#917c3d] p-3 text-white">
+                      <div className="flex items-center justify-between rounded-lg bg-[#D4AF37] p-3 text-white">
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
@@ -324,7 +324,7 @@ export default function FoodProductListing() {
                         <Button
                           variant="outline"
                           onClick={() => router.push("/cart")}
-                          className="relative flex-1 border-[#917c3d] text-[#917c3d] hover:bg-[#917c3d] hover:text-white"
+                          className="relative flex-1 border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-white"
                         >
                           <ShoppingCart className="mr-2 h-4 w-4" />
                           View Cart

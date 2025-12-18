@@ -12,12 +12,12 @@ export default function AccountPage() {
 
       <header className="flex justify-between items-center p-4">
   {/* Left section with My Account */}
-  <h1 className="text-3xl font-bold text-[#917c3d]">My Account</h1>
+  <h1 className="text-3xl font-bold text-[#D4AF37]">My Account</h1>
 
   {/* Right section with Bell, Menu, and Profile */}
   <div className="flex items-center gap-4">
-    <Bell className="text-[#917c3d] w-6 h-6" />
-    <Menu className="text-[#917c3d] w-6 h-6" />
+    <Bell className="text-[#D4AF37] w-6 h-6" />
+    <Menu className="text-[#D4AF37] w-6 h-6" />
     <Image
       src={Img}
       alt="Profile"
@@ -31,7 +31,7 @@ export default function AccountPage() {
 
       {/* Profile Section */}
       <div className="flex items-center gap-4 px-6 py-4">
-        <div className="w-16 h-16 rounded-full bg-[#917c3d] flex items-center justify-center text-white text-3xl font-bold">
+        <div className="w-16 h-16 rounded-full bg-[#D4AF37] flex items-center justify-center text-white text-3xl font-bold">
           S
         </div>
         <div>
@@ -54,7 +54,7 @@ export default function AccountPage() {
 
       {/* Share App Button */}
       <div className="px-6 py-8">
-        <button className="w-full py-4 bg-[#917c3d] text-white rounded-full text-xl font-semibold">Share App</button>
+        <button className="w-full py-4 bg-[#D4AF37] text-white rounded-full text-xl font-semibold">Share App</button>
       </div>
       <Footer/>
     </div>

@@ -96,7 +96,7 @@ export default function VerifyPage() {
                 <p className="text-sm text-gray-500">Didn&apos;t receive code?</p>
                 <button 
                   onClick={handleResend}
-                  className="text-#917c3d text-sm font-medium hover:text-orange-600 active:scale-95 transition-transform"
+                  className="text-#D4AF37 text-sm font-medium hover:text-orange-600 active:scale-95 transition-transform"
                 >
                   Resend Now
                 </button>

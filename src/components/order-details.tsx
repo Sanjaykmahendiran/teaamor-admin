@@ -32,7 +32,7 @@ export default function OrderDetails() {
               <button className="p-2">
                 <Printer className="h-5 w-5 text-gray-500" />
               </button>
-              <button className="p-2 bg-#917c3d rounded-full">
+              <button className="p-2 bg-#D4AF37 rounded-full">
                 <MoreHorizontal className="h-5 w-5 text-white" />
               </button>
             </div>
@@ -160,7 +160,7 @@ export default function OrderDetails() {
       {/* Ready for pickup Button - Fixed Bottom */}
       <div className="sticky bottom-0 w-full bg-white border-t p-4">
         <Link href="/ordermenu">
-        <button className="w-full bg-#917c3d text-white py-3 rounded-md text-center text-xl font-medium">
+        <button className="w-full bg-#D4AF37 text-white py-3 rounded-md text-center text-xl font-medium">
           Ready for pickup
         </button>
         </Link>

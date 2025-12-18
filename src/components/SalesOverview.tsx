@@ -19,7 +19,7 @@ const SalesOverview = () => {
       {
         label: "Sales",
         data: [520000, 490000, 160000, 730000, 540000, 230000, 80000],
-        backgroundColor: "#917c3d",
+        backgroundColor: "#D4AF37",
         borderRadius: 6,
         barThickness: 28,
       },
