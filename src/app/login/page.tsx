@@ -4,8 +4,8 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { PhoneInput } from "@/components/phone-input"
-import Imgl from "@/app/assets/starbucks/tea-logo.png"
-import Imgp from "@/app/assets/starbucks/tea-shop01.png"
+import Imgl from "@/assets/starbucks/tea-logo.png"
+import Imgp from "@/assets/starbucks/tea-shop01.png"
 
 export default function LoginPage() {
   const router = useRouter()

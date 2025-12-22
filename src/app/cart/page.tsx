@@ -22,78 +22,78 @@ import { useRouter } from "next/navigation";
 
 // --- 1. COPY IMAGE IMPORTS FROM POS PAGE ---
 // This ensures images load correctly.
-import milk01 from "@/app/assets/milk-tea/signature-tea.jpg";
-import milk02 from "@/app/assets/milk-tea/classic-tea.jpg";
-import milk03 from "@/app/assets/milk-tea/elachi-tea.jpg";
-import gingerTea from "@/app/assets/milk-tea/ginger-tea.jpg";
-import hotMilk01 from "@/app/assets/hot-milk/masala-milk.jpg";
-import hotMilk02 from "@/app/assets/hot-milk/badam-milk.jpg";
-import hotMilk03 from "@/app/assets/hot-milk/panankarkandu-milk.jpg";
-import hotMilk04 from "@/app/assets/hot-milk/naatu-sakkarai.jpg";
-import hotMilk05 from "@/app/assets/hot-milk/hot-chocolate.jpg";
-import filterCoffee from "@/app/assets/coffee/filter-coffee.jpg";
-import doubleStrongCoffee from "@/app/assets/coffee/strong-filtercoffee.jpg";
-import sukkuMalliCoffee from "@/app/assets/coffee/sukku-malli-coffee.jpg";
-import blackCoffee from "@/app/assets/coffee/black-coffee.jpg";
-import coldChocolate from "@/app/assets/cold-shake/cold-chocolate.jpg";
-import hazelnutColdChocolate from "@/app/assets/cold-shake/hazelnut-cold-chocolate.jpg";
-import coldMilo from "@/app/assets/cold-shake/cold-milo.jpg";
-import coldBournvita from "@/app/assets/cold-shake/cold-bournvita.jpg";
-import blackTea from "@/app/assets/water-based-tea/black-tea.jpg";
-import honeyGingerTea from "@/app/assets/water-based-tea/honey-ginger-tea.jpg";
-import lemonTea from "@/app/assets/water-based-tea/lemon-tea.jpg";
-import honeyLemonTea from "@/app/assets/water-based-tea/honey-lemon-tea.jpg";
-import sukkuMalliTea from "@/app/assets/water-based-tea/sukku-malli-tea.jpg";
-import thulasiTea from "@/app/assets/water-based-tea/thulasi-tea.jpg";
-import hibiscusTea from "@/app/assets/water-based-tea/hibiscus-tea.jpg";
-import icedTea from "@/app/assets/chillers/iced-tea.jpg";
-import lemonCooler from "@/app/assets/chillers/lemon-cooler.jpg";
-import coldBlackCoffee from "@/app/assets/chillers/cold-black-coffee.jpg";
-import classicFries from "@/app/assets/fries/classic-french-fries.jpg";
-import periPeriFries from "@/app/assets/fries/periperi-french-fries.jpg";
-import cheesyFries from "@/app/assets/fries/cheesy-fernch-fries.jpg";
-import alooSamosa from "@/app/assets/samosa/aloo-samosa.jpg";
-import miniAlooSamosa from "@/app/assets/samosa/miniu-aloo-samosa.jpg";
-import cheeseCornSamosa from "@/app/assets/samosa/cheese-corn-samosa.jpg";
-import chickenSamosa from "@/app/assets/samosa/chicken-samosa.jpg";
-import vegPuff from "@/app/assets/puff/veg-puff.jpg";
-import eggPuff from "@/app/assets/puff/egg-puff.jpg";
-import chickenPuff from "@/app/assets/puff/chicken-puff.jpg";
-import cheeseCornNuggets from "@/app/assets/quick-bites/cheese-corn-nuggets.jpg";
-import chickenNuggets from "@/app/assets/quick-bites/chicken-nuggets.jpg";
-import cheeseBalls from "@/app/assets/quick-bites/cheese-balls.jpg";
-import chickenPopcorn from "@/app/assets/quick-bites/cheese-balls.jpg";
-import vegCutlet from "@/app/assets/quick-bites/cheese-corn-nuggets.jpg";
-import chickenCutlet from "@/app/assets/quick-bites/chicken-nuggets.jpg";
-import paneerRoll from "@/app/assets/quick-bites/cheese-corn-nuggets.jpg";
-import chickenRoll from "@/app/assets/quick-bites/cheese-balls.jpg";
-import plainMaggi from "@/app/assets/maggi/plain-maggi.jpg";
-import masalaMaggi from "@/app/assets/maggi/masala-maggi.jpg";
-import periPeriMaggi from "@/app/assets/maggi/periperi-maggi.jpg";
-import cheeseMaggi from "@/app/assets/maggi/cheese-maggi.jpg";
+import milk01 from "@/assets/milk-tea/signature-tea.jpg";
+import milk02 from "@/assets/milk-tea/classic-tea.jpg";
+import milk03 from "@/assets/milk-tea/elachi-tea.jpg";
+import gingerTea from "@/assets/milk-tea/ginger-tea.jpg";
+import hotMilk01 from "@/assets/hot-milk/masala-milk.jpg";
+import hotMilk02 from "@/assets/hot-milk/badam-milk.jpg";
+import hotMilk03 from "@/assets/hot-milk/panankarkandu-milk.jpg";
+import hotMilk04 from "@/assets/hot-milk/naatu-sakkarai.jpg";
+import hotMilk05 from "@/assets/hot-milk/hot-chocolate.jpg";
+import filterCoffee from "@/assets/coffee/filter-coffee.jpg";
+import doubleStrongCoffee from "@/assets/coffee/strong-filtercoffee.jpg";
+import sukkuMalliCoffee from "@/assets/coffee/sukku-malli-coffee.jpg";
+import blackCoffee from "@/assets/coffee/black-coffee.jpg";
+import coldChocolate from "@/assets/cold-shake/cold-chocolate.jpg";
+import hazelnutColdChocolate from "@/assets/cold-shake/hazelnut-cold-chocolate.jpg";
+import coldMilo from "@/assets/cold-shake/cold-milo.jpg";
+import coldBournvita from "@/assets/cold-shake/cold-bournvita.jpg";
+import blackTea from "@/assets/water-based-tea/black-tea.jpg";
+import honeyGingerTea from "@/assets/water-based-tea/honey-ginger-tea.jpg";
+import lemonTea from "@/assets/water-based-tea/lemon-tea.jpg";
+import honeyLemonTea from "@/assets/water-based-tea/honey-lemon-tea.jpg";
+import sukkuMalliTea from "@/assets/water-based-tea/sukku-malli-tea.jpg";
+import thulasiTea from "@/assets/water-based-tea/thulasi-tea.jpg";
+import hibiscusTea from "@/assets/water-based-tea/hibiscus-tea.jpg";
+import icedTea from "@/assets/chillers/iced-tea.jpg";
+import lemonCooler from "@/assets/chillers/lemon-cooler.jpg";
+import coldBlackCoffee from "@/assets/chillers/cold-black-coffee.jpg";
+import classicFries from "@/assets/fries/classic-french-fries.jpg";
+import periPeriFries from "@/assets/fries/periperi-french-fries.jpg";
+import cheesyFries from "@/assets/fries/cheesy-fernch-fries.jpg";
+import alooSamosa from "@/assets/samosa/aloo-samosa.jpg";
+import miniAlooSamosa from "@/assets/samosa/miniu-aloo-samosa.jpg";
+import cheeseCornSamosa from "@/assets/samosa/cheese-corn-samosa.jpg";
+import chickenSamosa from "@/assets/samosa/chicken-samosa.jpg";
+import vegPuff from "@/assets/puff/veg-puff.jpg";
+import eggPuff from "@/assets/puff/egg-puff.jpg";
+import chickenPuff from "@/assets/puff/chicken-puff.jpg";
+import cheeseCornNuggets from "@/assets/quick-bites/cheese-corn-nuggets.jpg";
+import chickenNuggets from "@/assets/quick-bites/chicken-nuggets.jpg";
+import cheeseBalls from "@/assets/quick-bites/cheese-balls.jpg";
+import chickenPopcorn from "@/assets/quick-bites/cheese-balls.jpg";
+import vegCutlet from "@/assets/quick-bites/cheese-corn-nuggets.jpg";
+import chickenCutlet from "@/assets/quick-bites/chicken-nuggets.jpg";
+import paneerRoll from "@/assets/quick-bites/cheese-corn-nuggets.jpg";
+import chickenRoll from "@/assets/quick-bites/cheese-balls.jpg";
+import plainMaggi from "@/assets/maggi/plain-maggi.jpg";
+import masalaMaggi from "@/assets/maggi/masala-maggi.jpg";
+import periPeriMaggi from "@/assets/maggi/periperi-maggi.jpg";
+import cheeseMaggi from "@/assets/maggi/cheese-maggi.jpg";
 
-import Imagf1 from "@/app/assets/quick-bites/cheese-balls.jpg";
-import Imagf2 from "@/app/assets/quick-bites/cheese-corn-nuggets.jpg";
-import Imagf3 from "@/app/assets/quick-bites/chicken-nuggets.jpg";
-import Imagf4 from "@/app/assets/samosa/cheese-corn-samosa.jpg";
+import Imagf1 from "@/assets/quick-bites/cheese-balls.jpg";
+import Imagf2 from "@/assets/quick-bites/cheese-corn-nuggets.jpg";
+import Imagf3 from "@/assets/quick-bites/chicken-nuggets.jpg";
+import Imagf4 from "@/assets/samosa/cheese-corn-samosa.jpg";
 
-import Imagf01 from "@/app/assets/samosa/aloo-samosa.jpg";
-import Imagf02 from "@/app/assets/samosa/cheese-corn-samosa.jpg";
-import Imagf03 from "@/app/assets/samosa/chicken-samosa.jpg";
-import Imagf04 from "@/app/assets/samosa/miniu-aloo-samosa.jpg";
+import Imagf01 from "@/assets/samosa/aloo-samosa.jpg";
+import Imagf02 from "@/assets/samosa/cheese-corn-samosa.jpg";
+import Imagf03 from "@/assets/samosa/chicken-samosa.jpg";
+import Imagf04 from "@/assets/samosa/miniu-aloo-samosa.jpg";
 
-import ImagC1 from "@/app/assets/chillers/cold-black-coffee.jpg";
-import ImagC2 from "@/app/assets/maggi/cheese-maggi.jpg";
-import ImagC3 from "@/app/assets/maggi/masala-maggi.jpg";
+import ImagC1 from "@/assets/chillers/cold-black-coffee.jpg";
+import ImagC2 from "@/assets/maggi/cheese-maggi.jpg";
+import ImagC3 from "@/assets/maggi/masala-maggi.jpg";
 
-import Imagc from "@/app/assets/puff/chicken-puff.jpg";
-import Imagc2 from "@/app/assets/puff/egg-puff.jpg";
-import Imagc3 from "@/app/assets/puff/veg-puff.jpg";
+import Imagc from "@/assets/puff/chicken-puff.jpg";
+import Imagc2 from "@/assets/puff/egg-puff.jpg";
+import Imagc3 from "@/assets/puff/veg-puff.jpg";
 
-import ImagS from "@/app/assets/hot-milk/badam-milk.jpg";
-import imagS1 from "@/app/assets/hot-milk/hot-chocolate.jpg";
-import imagS2 from "@/app/assets/hot-milk/masala-milk.jpg";
-import imagS3 from "@/app/assets/hot-milk/masala-milk.jpg";
+import ImagS from "@/assets/hot-milk/badam-milk.jpg";
+import imagS1 from "@/assets/hot-milk/hot-chocolate.jpg";
+import imagS2 from "@/assets/hot-milk/masala-milk.jpg";
+import imagS3 from "@/assets/hot-milk/masala-milk.jpg";
 
 interface Product {
   id: string;
@@ -400,6 +400,8 @@ export default function CartPage() {
   const [promoCode, setPromoCode] = useState("")
   const [promoApplied, setPromoApplied] = useState(false)
   const [isCheckingOut, setIsCheckingOut] = useState(false)
+  const [showThanksPopup, setShowThanksPopup] = useState(false)
+  const [orderNumber, setOrderNumber] = useState("")
   const router = useRouter()
 
   // Load cart from localStorage
@@ -479,13 +481,28 @@ export default function CartPage() {
     // Simulate checkout process
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
-    // Clear cart after successful checkout
-    clearCart()
+    // Generate order number
+    const newOrderNumber = `ORD-${Date.now().toString().slice(-6)}`
+    setOrderNumber(newOrderNumber)
+
+    // Show thanks popup first
+    setShowThanksPopup(true)
     setIsCheckingOut(false)
 
-    // You could redirect to a success page here
-    alert("Order placed successfully! 🎉")
+    // Clear cart after showing popup
+    clearCart()
   }
+
+  // Auto-redirect to waiting page after 5 seconds
+  useEffect(() => {
+    if (showThanksPopup && orderNumber) {
+      const timer = setTimeout(() => {
+        router.push(`/pos`)
+      }, 5000)
+
+      return () => clearTimeout(timer)
+    }
+  }, [showThanksPopup, orderNumber, router])
 
   const cartItems = getCartItems()
   const subtotal = calculateSubtotal()
@@ -501,9 +518,86 @@ export default function CartPage() {
     )
   }
 
-  if (cartItems.length === 0) {
+  if (cartItems.length === 0 && !showThanksPopup) {
     return (
       <div className="min-h-screen bg-gray-50">
+        {/* Thanks Popup */}
+        {showThanksPopup && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 text-center relative"
+            >
+              {/* Success Icon */}
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#D4AF37] to-[#B8941F] rounded-full flex items-center justify-center"
+              >
+                <motion.svg
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
+                  className="w-12 h-12 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={3}
+                    d="M5 13l4 4L19 7"
+                  />
+                </motion.svg>
+              </motion.div>
+
+              {/* Thank You Message */}
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-3xl font-bold text-[#2c375d] mb-3"
+              >
+                Thank You!
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="text-gray-600 mb-6"
+              >
+                Your order has been placed successfully
+              </motion.p>
+
+              {/* Order Number */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="bg-gray-50 rounded-xl p-4 mb-6"
+              >
+                <p className="text-sm text-gray-600 mb-1">Order Number</p>
+                <p className="text-xl font-bold text-[#2c375d]">{orderNumber}</p>
+              </motion.div>
+
+              {/* Auto-redirect message */}
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+                className="text-sm text-gray-500"
+              >
+                Redirecting to order status...
+              </motion.p>
+            </motion.div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="bg-white shadow-sm sticky top-0 z-40">
           <div className="max-w-7xl mx-auto px-4 py-4 flex items-center">
@@ -523,7 +617,7 @@ export default function CartPage() {
           <p className="text-gray-600 mb-8">Add some delicious items to get started!</p>
           <Button
             onClick={() => router.back()}
-            className="bg-[#D4AF37] hover:bg-[#e55a2b] text-white px-8 py-3 rounded-lg font-medium"
+            className="text-base text-white px-8 py-5 rounded-lg font-medium"
           >
             Browse Menu
           </Button>
@@ -535,6 +629,83 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Thanks Popup */}
+      {showThanksPopup && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 text-center relative"
+          >
+            {/* Success Icon */}
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#D4AF37] to-[#B8941F] rounded-full flex items-center justify-center"
+            >
+              <motion.svg
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="w-12 h-12 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={3}
+                  d="M5 13l4 4L19 7"
+                />
+              </motion.svg>
+            </motion.div>
+
+            {/* Thank You Message */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="text-3xl font-bold text-[#2c375d] mb-3"
+            >
+              Thank You!
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="text-gray-600 mb-6"
+            >
+              Your order has been placed successfully
+            </motion.p>
+
+            {/* Order Number */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="bg-gray-50 rounded-xl p-4 mb-6"
+            >
+              <p className="text-sm text-gray-600 mb-1">Order Number</p>
+              <p className="text-xl font-bold text-[#2c375d]">{orderNumber}</p>
+            </motion.div>
+
+            {/* Auto-redirect message */}
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="text-sm text-gray-500"
+            >
+              Redirecting to order status...
+            </motion.p>
+          </motion.div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="bg-white shadow-sm sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -566,36 +737,38 @@ export default function CartPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
-                      className="flex items-center space-x-4 py-4 border-b border-gray-100 last:border-b-0"
+                      className="flex flex-col border-b border-gray-100 last:border-b-0"
                     >
-                      <div className="relative w-16 h-16 flex-shrink-0">
-                        <Image
-                          src={item.image || "/placeholder.svg"}
-                          alt={item.name}
-                          fill
-                          className="object-cover rounded-lg"
-                        />
-                        {item.badge && (
-                          <div className="absolute -top-1 -right-1 bg-[#D4AF37] text-white text-xs font-bold px-1 py-0.5 rounded-full text-[10px]">
-                            {item.badge}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-gray-800 truncate">{item.name}</h3>
-                        <p className="text-sm text-gray-600 truncate">{item.description}</p>
-                        <div className="flex items-center space-x-2 mt-1">
-                          <span className="font-bold text-[#D4AF37]">
-                            ₹{(item.discountedPrice || item.price).toFixed(2)}
-                          </span>
-                          {item.discountedPrice && (
-                            <span className="text-sm text-gray-500 line-through">₹{item.price.toFixed(2)}</span>
+                      <div className="flex items-center space-x-4">
+                        <div className="relative w-16 h-16 flex-shrink-0">
+                          <Image
+                            src={item.image || "/placeholder.svg"}
+                            alt={item.name}
+                            fill
+                            className="object-cover rounded-lg"
+                          />
+                          {item.badge && (
+                            <div className="absolute -top-1 -right-1 bg-[#D4AF37] text-white text-xs font-bold px-1 py-0.5 rounded-full text-[10px]">
+                              {item.badge}
+                            </div>
                           )}
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-gray-800 truncate">{item.name}</h3>
+                          <p className="text-sm text-gray-600 truncate">{item.description}</p>
+                          <div className="flex items-center space-x-2 mt-1">
+                            <span className="font-bold text-[#D4AF37]">
+                              ₹{(item.discountedPrice || item.price).toFixed(2)}
+                            </span>
+                            {item.discountedPrice && (
+                              <span className="text-sm text-gray-500 line-through">₹{item.price.toFixed(2)}</span>
+                            )}
+                          </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center space-x-3">
+                      <div className="flex items-center justify-end space-x-3 mt-3 ml-20">
                         <div className="flex items-center bg-gray-100 rounded-lg">
                           <motion.button
                             whileHover={{ scale: 1.1 }}
@@ -631,46 +804,7 @@ export default function CartPage() {
               </div>
             </div>
 
-            {/* Delivery Address */}
-            {/* <div className="bg-white rounded-2xl shadow-sm border border-gray-100 mt-6 p-6">
-              <h2 className="text-lg font-bold text-gray-800 mb-4">Delivery Address</h2>
-              <div className="space-y-3">
-                <div
-                  className={cn(
-                    "p-4 rounded-lg border-2 cursor-pointer transition-colors",
-                    selectedAddress === "home"
-                      ? "border-[#D4AF37] bg-orange-50"
-                      : "border-gray-200 hover:border-gray-300",
-                  )}
-                  onClick={() => setSelectedAddress("home")}
-                >
-                  <div className="flex items-center space-x-3">
-                    <MapPin className="w-5 h-5 text-[#D4AF37]" />
-                    <div>
-                      <p className="font-medium text-gray-800">Home</p>
-                      <p className="text-sm text-gray-600">123 Main Street, City, State 12345</p>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className={cn(
-                    "p-4 rounded-lg border-2 cursor-pointer transition-colors",
-                    selectedAddress === "work"
-                      ? "border-[#D4AF37] bg-orange-50"
-                      : "border-gray-200 hover:border-gray-300",
-                  )}
-                  onClick={() => setSelectedAddress("work")}
-                >
-                  <div className="flex items-center space-x-3">
-                    <MapPin className="w-5 h-5 text-[#D4AF37]" />
-                    <div>
-                      <p className="font-medium text-gray-800">Work</p>
-                      <p className="text-sm text-gray-600">456 Business Ave, City, State 12345</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> */}
+          
           </div>
 
           {/* Order Summary */}
@@ -679,7 +813,7 @@ export default function CartPage() {
               <h2 className="text-lg font-bold text-gray-800 mb-4">Order Summary</h2>
 
               {/* Promo Code */}
-              {/* <div className="mb-6">
+              <div className="mb-6">
                 <div className="flex space-x-2">
                   <input
                     type="text"
@@ -698,20 +832,14 @@ export default function CartPage() {
                   </Button>
                 </div>
                 {promoApplied && <p className="text-sm text-green-600 mt-2">✓ Promo code applied!</p>}
-                <p className="text-xs text-gray-500 mt-1">Try: QWIKY10 for 10% off</p>
-              </div> */}
+                
+              </div>
 
               {/* Price Breakdown */}
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal</span>
                   <span className="font-medium">₹{subtotal.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Delivery Fee</span>
-                  <span className="font-medium">
-                    {deliveryFee === 0 ? <span className="text-green-600">FREE</span> : `₹${deliveryFee.toFixed(2)}`}
-                  </span>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between text-green-600">
@@ -780,7 +908,7 @@ export default function CartPage() {
               <Button
                 onClick={handleCheckout}
                 disabled={isCheckingOut}
-                className="w-full bg-[#D4AF37] hover:bg-[#D4AF37] text-white py-4 rounded-lg font-medium text-lg disabled:opacity-50"
+                className="w-full  text-white py-6 rounded-lg font-medium text-lg disabled:opacity-50"
               >
                 {isCheckingOut ? (
                   <div className="flex items-center justify-center space-x-2">
@@ -788,7 +916,7 @@ export default function CartPage() {
                     <span>Processing...</span>
                   </div>
                 ) : (
-                  `Place Order • ₹${total.toFixed(2)}`
+                  `Place Order  ₹${total.toFixed(2)}`
                 )}
               </Button>
 

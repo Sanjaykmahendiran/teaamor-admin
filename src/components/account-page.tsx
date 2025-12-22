@@ -1,7 +1,7 @@
 import type React from "react"
 import Image from "next/image"
 import { Bell, Menu, User, CreditCard, MapPin, Truck, BellRing, Star, Gift, LogOut, ChevronRight } from "lucide-react"
-import Img from "@/app/assets/onboarding/1.png"
+import Img from "@/assets/onboarding/1.png"
 import Footer from "@/components/footer"
 
 export default function AccountPage() {

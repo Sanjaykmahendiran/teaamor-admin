@@ -25,7 +25,7 @@ export function OrdersPanel({ recentOrders, handleOrderClick, getStatusColor, ge
                 onClick={() => handleOrderClick(order)}
               >
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
                     {getStatusIcon(order.status)}
                   </div>
                   <div>

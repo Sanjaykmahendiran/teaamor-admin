@@ -4,10 +4,10 @@ import SectionTitle from "@/lib/section-title";
 import DishCard from "@/lib/dish-card";
 import Image from "next/image";
 
-import ImagC from "@/app/assets/onboarding/1.png";
-import ImagC1 from "@/app/assets/chillers/cold-black-coffee.jpg";
-import ImagC2 from "@/app/assets/maggi/cheese-maggi.jpg";
-import ImagC3 from "@/app/assets/maggi/masala-maggi.jpg";
+import ImagC from "@/assets/onboarding/1.png";
+import ImagC1 from "@/assets/chillers/cold-black-coffee.jpg";
+import ImagC2 from "@/assets/maggi/cheese-maggi.jpg";
+import ImagC3 from "@/assets/maggi/masala-maggi.jpg";
 
 const chefSpecials = [
   {

@@ -4,10 +4,10 @@ import { useRef } from "react";
 import SectionTitle from "@/lib/section-title";
 import DishCard from "@/lib/dish-card";
 
-import ImagS from "@/app/assets/hot-milk/badam-milk.jpg";
-import imagS1 from "@/app/assets/hot-milk/hot-chocolate.jpg";
-import imagS2 from "@/app/assets/hot-milk/masala-milk.jpg";
-import imagS3 from "@/app/assets/hot-milk/masala-milk.jpg";
+import ImagS from "@/assets/hot-milk/badam-milk.jpg";
+import imagS1 from "@/assets/hot-milk/hot-chocolate.jpg";
+import imagS2 from "@/assets/hot-milk/masala-milk.jpg";
+import imagS3 from "@/assets/hot-milk/masala-milk.jpg";
 
 const discountedDishes = [
   {

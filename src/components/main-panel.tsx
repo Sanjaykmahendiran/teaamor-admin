@@ -19,7 +19,7 @@ import {
   X,
 } from "lucide-react"
 
-import type { ActivePanel } from "@/app/user/page"
+import type { ActivePanel } from "@/app/profile/page"
 
 interface MainPanelProps {
   user: {

@@ -3,9 +3,9 @@
 import SectionTitle from "@/lib/section-title";
 import DishCard from "@/lib/dish-card";
 
-import Imagc from "@/app/assets/puff/chicken-puff.jpg";
-import Imagc2 from "@/app/assets/puff/egg-puff.jpg";
-import Imagc3 from "@/app/assets/puff/veg-puff.jpg";
+import Imagc from "@/assets/puff/chicken-puff.jpg";
+import Imagc2 from "@/assets/puff/egg-puff.jpg";
+import Imagc3 from "@/assets/puff/veg-puff.jpg";
 
 const ratedDishes = [
   {

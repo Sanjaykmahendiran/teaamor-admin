@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 import { ChevronLeft, ChevronRight, MoreHorizontal, Printer } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import ImagC from "@/app/assets/posfood/caramel_src.png"
+import ImagC from "@/assets/posfood/caramel_src.png"
 
 export default function OrderDetails() {
   const router = useRouter()

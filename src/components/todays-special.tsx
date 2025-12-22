@@ -4,10 +4,10 @@ import { useRef } from "react";
 import SectionTitle from "@/lib/section-title";
 import DishCard from "@/lib/dish-card";
 
-import Imagf1 from "@/app/assets/quick-bites/cheese-balls.jpg";
-import Imagf2 from "@/app/assets/quick-bites/cheese-corn-nuggets.jpg";
-import Imagf3 from "@/app/assets/quick-bites/chicken-nuggets.jpg";
-import Imagf4 from "@/app/assets/samosa/cheese-corn-samosa.jpg";
+import Imagf1 from "@/assets/quick-bites/cheese-balls.jpg";
+import Imagf2 from "@/assets/quick-bites/cheese-corn-nuggets.jpg";
+import Imagf3 from "@/assets/quick-bites/chicken-nuggets.jpg";
+import Imagf4 from "@/assets/samosa/cheese-corn-samosa.jpg";
 
 const todaysSpecials = [
   {

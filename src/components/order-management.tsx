@@ -6,7 +6,7 @@ import { Printer, Check, Trash2 } from "lucide-react" // Added Check icon
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import Image from "next/image"
-import ImagF from "@/app/assets/starbucks/teamor-logo.png"
+import ImagF from "@/assets/starbucks/teamor-logo.png"
 
 const OrderManagement = () => {
   const [activeTab, setActiveTab] = useState("processing")

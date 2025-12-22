@@ -9,17 +9,17 @@ import Footer from "@/components/footer"
 import { motion, AnimatePresence } from "framer-motion"
 
 // --- IMAGE IMPORTS ---
-import milk01 from "@/app/assets/milk-tea/signature-tea.jpg";
-import hotMilk01 from "@/app/assets/hot-milk/masala-milk.jpg";
-import filterCoffee from "@/app/assets/coffee/filter-coffee.jpg";
-import coldChocolate from "@/app/assets/cold-shake/cold-chocolate.jpg";
-import blackTea from "@/app/assets/water-based-tea/black-tea.jpg";
-import icedTea from "@/app/assets/chillers/iced-tea.jpg";
-import classicFries from "@/app/assets/fries/classic-french-fries.jpg";
-import alooSamosa from "@/app/assets/samosa/aloo-samosa.jpg";
-import vegPuff from "@/app/assets/puff/veg-puff.jpg";
-import chickenNuggets from "@/app/assets/quick-bites/chicken-nuggets.jpg";
-import plainMaggi from "@/app/assets/maggi/plain-maggi.jpg";
+import milk01 from "@/assets/milk-tea/signature-tea.jpg";
+import hotMilk01 from "@/assets/hot-milk/masala-milk.jpg";
+import filterCoffee from "@/assets/coffee/filter-coffee.jpg";
+import coldChocolate from "@/assets/cold-shake/cold-chocolate.jpg";
+import blackTea from "@/assets/water-based-tea/black-tea.jpg";
+import icedTea from "@/assets/chillers/iced-tea.jpg";
+import classicFries from "@/assets/fries/classic-french-fries.jpg";
+import alooSamosa from "@/assets/samosa/aloo-samosa.jpg";
+import vegPuff from "@/assets/puff/veg-puff.jpg";
+import chickenNuggets from "@/assets/quick-bites/chicken-nuggets.jpg";
+import plainMaggi from "@/assets/maggi/plain-maggi.jpg";
 
 type Category = {
   id: string

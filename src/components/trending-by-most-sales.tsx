@@ -4,10 +4,10 @@ import { useRef } from "react";
 import SectionTitle from "@/lib/section-title";
 import DishCard from "@/lib/dish-card";
 
-import Imagf1 from "@/app/assets/samosa/aloo-samosa.jpg";
-import Imagf2 from "@/app/assets/samosa/cheese-corn-samosa.jpg";
-import Imagf3 from "@/app/assets/samosa/chicken-samosa.jpg";
-import Imagf4 from "@/app/assets/samosa/miniu-aloo-samosa.jpg";
+import Imagf1 from "@/assets/samosa/aloo-samosa.jpg";
+import Imagf2 from "@/assets/samosa/cheese-corn-samosa.jpg";
+import Imagf3 from "@/assets/samosa/chicken-samosa.jpg";
+import Imagf4 from "@/assets/samosa/miniu-aloo-samosa.jpg";
 
 const trendingDishes = [
   {

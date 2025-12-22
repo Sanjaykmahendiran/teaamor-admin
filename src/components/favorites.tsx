@@ -3,10 +3,10 @@
 import { useContext } from "react"
 import SectionTitle from "@/lib/section-title"
 import DishCard from "@/lib/dish-card"
-import ImagF from "@/app/assets/chillers/cold-black-coffee.jpg"
-import ImagF2 from "@/app/assets/chillers/iced-tea.jpg"
-import ImagF3 from "@/app/assets/chillers/lemon-cooler.jpg"
-import Imagf4 from "@/app/assets/cold-shake/cold-chocolate.jpg"
+import ImagF from "@/assets/chillers/cold-black-coffee.jpg"
+import ImagF2 from "@/assets/chillers/iced-tea.jpg"
+import ImagF3 from "@/assets/chillers/lemon-cooler.jpg"
+import Imagf4 from "@/assets/cold-shake/cold-chocolate.jpg"
 import { CartContext } from "@/components/food-product-listing"
 
 // All dishes from all sections combined

@@ -1,15 +1,16 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import Image from "next/image"
+import { Mail, Lock, Eye, EyeOff } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { setUser } from "@/lib/auth"
 
-import PhoneIllustration from "@/app/assets/starbucks/phone-pic.png"
+import PhoneIllustration from "@/assets/starbucks/phone-pic.png"
+import logo from "@/assets/starbucks/tea-amor-logo.png"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -17,13 +18,10 @@ export default function LoginPage() {
   /* ---------------- STATES ---------------- */
   const [isSplashLoading, setIsSplashLoading] = useState(true)
 
-  const [name, setName] = useState("")
-  const [mobile, setMobile] = useState("")
-  const [otp, setOtp] = useState("")
-  const [showOtpField, setShowOtpField] = useState(false)
-  const [isVerifying, setIsVerifying] = useState(false)
-
-  const mobileInputRef = useRef<HTMLInputElement>(null)
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   /* ---------------- SPLASH LOADING ---------------- */
   useEffect(() => {
@@ -35,36 +33,37 @@ export default function LoginPage() {
   }, [])
 
   /* ---------------- HANDLERS ---------------- */
-  const handleSendOtp = () => {
-    if (name.trim() && mobile.length === 10) {
-      setShowOtpField(true)
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    
+    if (!email.trim() || !password.trim()) {
+      return
     }
-  }
 
-  const handleVerifyOTP = () => {
-    if (otp.length !== 6) return
-
-    setIsVerifying(true)
+    setIsLoading(true)
 
     setTimeout(() => {
       setUser({
         id: crypto.randomUUID(),
-        name,
-        mobile,
+        name: email.split("@")[0], // Use email prefix as name
+        mobile: "",
         role: "retailer",
       })
 
-      router.push("/dashboard")
+      router.push("/home")
     }, 1500)
   }
 
   /* ---------------- SPLASH SCREEN ---------------- */
   if (isSplashLoading) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-[#2c375d] to-[#2c375d]">
+      <div className="fixed inset-0 flex items-center justify-center bg-white">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin" />
-          <p className="text-white text-sm tracking-wide">Loading...</p>
+          <img 
+            src={logo.src} 
+            alt="Tea Amor Logo" 
+            className="w-48 h-48 object-contain animate-zoom"
+          />
         </div>
       </div>
     )
@@ -72,10 +71,10 @@ export default function LoginPage() {
 
   /* ---------------- LOGIN SCREEN ---------------- */
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-[#2c375d] to-[#2c375d]">
+    <div className="fixed inset-0 bg-[#2c375d]">
       {/* Background Illustration */}
       <div
-        className="absolute inset-0 bg-no-repeat bg-center bg-contain opacity-20"
+        className="absolute inset-0 bg-no-repeat bg-center bg-contain opacity-80"
         style={{ backgroundImage: `url(${PhoneIllustration.src})` }}
       />
 
@@ -86,66 +85,66 @@ export default function LoginPage() {
       </div>
 
       {/* Bottom Form */}
-      <div className="fixed bottom-0 w-full bg-white rounded-t-3xl px-6 py-8">
-        <h3 className="text-xl font-semibold mb-4">Sign in</h3>
+      <div className="fixed bottom-0 w-full bg-white rounded-t-3xl px-6 py-8 shadow-2xl">
+        <h3 className="text-2xl font-bold mb-6 text-gray-900">Sign in</h3>
 
-        <div className="space-y-5">
-          {/* NAME FIELD */}
-          <Input
-            placeholder="Enter your name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-
-          {/* MOBILE FIELD */}
-          <Input
-            ref={mobileInputRef}
-            placeholder="Enter mobile number"
-            value={mobile}
-            onChange={(e) =>
-              setMobile(e.target.value.replace(/\D/g, "").slice(0, 10))
-            }
-          />
-
-          {/* SEND OTP */}
-          {name && mobile.length === 10 && !showOtpField && (
-            <button
-              onClick={handleSendOtp}
-              className="text-primary font-semibold text-sm"
-            >
-              Send OTP
-            </button>
-          )}
-
-          {/* OTP FIELD */}
-          {showOtpField && (
-            <>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* EMAIL FIELD */}
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-gray-900 flex items-center gap-2">
+              Email Address
+            </label>
+            <div className="relative">
               <Input
-                placeholder="Enter 6-digit OTP"
-                value={otp}
-                onChange={(e) =>
-                  setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
-                }
-                className="tracking-widest text-center"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="h-10 pl-11 text-base border-2 focus-visible:border-primary transition-colors"
+                required
               />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+            </div>
+          </div>
 
-              <Button
-                onClick={handleVerifyOTP}
-                disabled={otp.length !== 6 || isVerifying}
-                className="w-full"
+          {/* PASSWORD FIELD */}
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-gray-900 flex items-center gap-2">
+              Password
+            </label>
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="h-10 pl-11 pr-11 text-base border-2 focus-visible:border-primary transition-colors"
+                required
+              />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
               >
-                {isVerifying ? "Verifying..." : "Verify & Login"}
-              </Button>
-            </>
-          )}
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
+            </div>
+          </div>
 
-          <p className="text-center text-sm">
-            Don’t have an account?{" "}
-            <Link href="/signup" className="font-medium underline">
-              Sign up
-            </Link>
-          </p>
-        </div>
+          {/* SUBMIT BUTTON */}
+          <Button
+            type="submit"
+            disabled={!email.trim() || !password.trim() || isLoading}
+            className="w-full h-12 mt-2 text-base font-semibold bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
+          >
+            {isLoading ? "Signing in..." : "Sign In"}
+          </Button>
+        </form>
       </div>
     </div>
   )

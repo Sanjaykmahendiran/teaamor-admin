@@ -181,7 +181,7 @@ export default function DishCard(props: DishCardProps) {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => addToCart(id)}
-                  className="rounded-lg border-2 border-[#D4AF37] px-4 py-2 text-sm font-medium text-[#D4AF37] transition-colors hover:bg-[#D4AF37] hover:text-white"
+                  className="rounded-lg border-2 border-primary px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-[#D4AF37] hover:text-white"
                 >
                   ADD
                 </motion.button>
@@ -230,7 +230,7 @@ export default function DishCard(props: DishCardProps) {
       onClick={handleCardClick}
     >
       {badge && (
-        <div className="absolute left-3 top-3 z-10 rounded-full bg-[#D4AF37] px-2.5 py-1 text-xs font-semibold text-white shadow-sm">
+        <div className="absolute left-3 top-3 z-10 rounded-full bg-primary px-2.5 py-1 text-xs font-semibold text-white shadow-sm">
           {badge}
         </div>
       )}
@@ -321,7 +321,7 @@ export default function DishCard(props: DishCardProps) {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => addToCart(id)}
-              className="flex h-9 w-full items-center justify-center rounded-lg border border-[#D4AF37] text-xs font-semibold text-[#D4AF37] transition-colors hover:bg-[#D4AF37] hover:text-white"
+              className="flex h-9 w-full items-center justify-center rounded-lg border border-[#2c375d] text-xs font-semibold text-primary transition-colors hover:bg-[#D4AF37] hover:text-white"
             >
               ADD
             </motion.button>
@@ -329,7 +329,7 @@ export default function DishCard(props: DishCardProps) {
             <motion.div
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
-              className="flex h-9 items-center justify-between rounded-lg bg-[#D4AF37] px-2 text-white"
+              className="flex h-9 items-center justify-between rounded-lg bg-primary px-2 text-white"
             >
               <motion.button
                 whileHover={{ scale: 1.1 }}
