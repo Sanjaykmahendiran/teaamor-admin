@@ -1,21 +1,19 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react"; // Removed useContext, added hooks
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingCart, X, Plus, Minus } from "lucide-react";
-import { Button } from "@/components/ui/button"; // Added Button import
+import { ShoppingCart, X, Plus, Minus, Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import DishCard from "@/lib/dish-card";
 import {
   CartContext,
   type Product,
-  // Ensure this is exported from your listing file or defined here
 } from "@/components/food-product-listing";
 
 // --- IMAGES (Kept exactly as you provided) ---
@@ -70,31 +68,10 @@ import periPeriMaggi from "@/assets/maggi/periperi-maggi.jpg";
 import cheeseMaggi from "@/assets/maggi/cheese-maggi.jpg";
 
 // --- TYPES & DATA ---
-type Category = {
-  id: string;
-  icon: string;
-  label: string;
-};
-
-// Ensure CartItem is defined if not exported
 interface CartItem {
   productId: string;
   quantity: number;
 }
-
-const categories: Category[] = [
-  { id: "milk-tea", icon: "🍵", label: "Milk Tea" },
-  { id: "hot-milk", icon: "🥛", label: "Hot Milk" },
-  { id: "coffee", icon: "☕", label: "Coffee" },
-  { id: "cold-shakes", icon: "🥤", label: "Cold Shakes" },
-  { id: "water-tea", icon: "🫖", label: "Water Based Tea" },
-  { id: "chillers", icon: "🧊", label: "Chillers" },
-  { id: "fries", icon: "🍟", label: "Fries" },
-  { id: "samosa", icon: "🥟", label: "Samosa" },
-  { id: "puff", icon: "🥧", label: "Puff" },
-  { id: "quick-bites", icon: "🍗", label: "Quick Bites" },
-  { id: "maggi", icon: "🍜", label: "Maggi" },
-];
 
 const posData: Record<string, Product[]> = {
   "milk-tea": [
@@ -613,12 +590,30 @@ const posData: Record<string, Product[]> = {
 
 export default function PosPage() {
   const router = useRouter();
-  const [activeCategory, setActiveCategory] = useState("milk-tea");
+  const [searchQuery, setSearchQuery] = useState("");
 
   // --- INITIALIZE CART STATE (Copied from FoodProductListing) ---
   const [cart, setCart] = useState<CartItem[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  // Flatten all products from all categories
+  const allProducts = useMemo(() => {
+    return Object.values(posData).flat();
+  }, []);
+
+  // Filter products based on search query
+  const filteredProducts = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return allProducts;
+    }
+    const query = searchQuery.toLowerCase();
+    return allProducts.filter(
+      (product) =>
+        product.name.toLowerCase().includes(query) ||
+        product.description.toLowerCase().includes(query)
+    );
+  }, [allProducts, searchQuery]);
 
   // --- LOCAL STORAGE EFFECTS ---
   useEffect(() => {
@@ -694,42 +689,45 @@ export default function PosPage() {
   };
 
   return (
-    // WRAP EVERYTHING IN THE PROVIDER
     <CartContext.Provider value={cartContextValue}>
       <div className="flex h-screen flex-col bg-gray-50">
         <Header />
 
-        <div className="flex flex-1">
-          {/* Sidebar */}
-          <div className="flex h-[calc(100vh-64px-64px)] w-[80px] flex-col items-center overflow-y-auto border-r scroll-smooth scrollbar-hide bg-white">
-            {categories.map((cat) => (
-              <CategoryItem
-                key={cat.id}
-                icon={cat.icon}
-                label={cat.label}
-                active={activeCategory === cat.id}
-                onClick={() => setActiveCategory(cat.id)}
+        {/* Search Bar */}
+        <div className="sticky top-16 z-40 bg-white border-b border-gray-200 px-4 py-3">
+          <div className="max-w-4xl mx-auto">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent"
               />
-            ))}
+            </div>
           </div>
+        </div>
 
-          {/* Grid of DishCard */}
-          <div className="h-[calc(100vh-64px-64px)] flex-1 overflow-y-auto p-3 scroll-smooth scrollbar-hide">
-            {(posData[activeCategory] ?? []).length > 0 ? (
-              <div className="mx-auto grid max-w-3xl grid-cols-2 gap-3">
-                {posData[activeCategory].map((item) => (
-                  <div key={item.id} className="flex h-[320px] flex-col">
-                    <DishCard
-                      {...item}
-                      horizontal={false}
-                    />
-                  </div>
+        {/* Product List */}
+        <div className="flex-1 overflow-y-auto p-4 scroll-smooth scrollbar-hide">
+          <div className="max-w-4xl mx-auto">
+            {filteredProducts.length > 0 ? (
+              <div className="space-y-2">
+                {filteredProducts.map((product) => (
+                  <ProductListItem
+                    key={product.id}
+                    product={product}
+                    quantity={getProductQuantity(product.id)}
+                    onAdd={() => addToCart(product.id)}
+                    onRemove={() => removeFromCart(product.id)}
+                    onClick={() => setSelectedProduct(product)}
+                  />
                 ))}
               </div>
             ) : (
-              <div className="flex h-full items-center justify-center text-sm text-gray-500">
-                No items available for &quot;
-                {categories.find((c) => c.id === activeCategory)?.label}&quot;
+              <div className="flex h-full items-center justify-center text-sm text-gray-500 py-16">
+                No products found matching &quot;{searchQuery}&quot;
               </div>
             )}
           </div>
@@ -918,36 +916,95 @@ export default function PosPage() {
   );
 }
 
-/* Sidebar pill */
-type CategoryItemProps = {
-  icon: React.ReactNode;
-  label: string;
-  active?: boolean;
-  onClick?: () => void;
+/* Product List Item */
+type ProductListItemProps = {
+  product: Product;
+  quantity: number;
+  onAdd: () => void;
+  onRemove: () => void;
+  onClick: () => void;
 };
 
-function CategoryItem({ icon, label, active, onClick }: CategoryItemProps) {
+function ProductListItem({
+  product,
+  quantity,
+  onAdd,
+  onRemove,
+  onClick,
+}: ProductListItemProps) {
   return (
-    <button
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer"
       onClick={onClick}
-      className="mb-6 flex w-full flex-col items-center focus:outline-none"
     >
-      <div
-        className={cn(
-          "mt-4 mb-1 flex h-12 w-12 items-center justify-center rounded-full",
-          active ? "bg-[#fff1c8]" : "bg-gray-100",
-        )}
-      >
-        <span className="text-xl">{icon}</span>
+      <div className="flex items-center p-4 gap-4">
+        {/* Product Image */}
+        <div className="relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden">
+          <Image
+            src={product.image || "/placeholder.svg"}
+            alt={product.name}
+            fill
+            className="object-cover"
+          />
+        </div>
+
+        {/* Product Info */}
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-gray-900 truncate">{product.name}</h3>
+          <p className="text-sm text-gray-600 line-clamp-1 mt-1">
+            {product.description}
+          </p>
+          <div className="flex items-center gap-2 mt-2">
+            <span className="font-bold text-[#D4AF37]">
+              ₹{(product.discountedPrice || product.price).toFixed(2)}
+            </span>
+            {product.discountedPrice && (
+              <span className="text-sm text-gray-500 line-through">
+                ₹{product.price.toFixed(2)}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Quantity Controls */}
+        <div onClick={(e) => e.stopPropagation()} className="flex-shrink-0">
+          {quantity === 0 ? (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={onAdd}
+              className="px-4 py-2 rounded-lg bg-primary text-white font-medium hover:bg-[#B8941F] transition-colors"
+            >
+              Add
+            </motion.button>
+          ) : (
+            <div className="flex items-center gap-3 bg-primary rounded-lg px-3 py-2">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={onRemove}
+                className="text-white hover:bg-white/20 rounded-full p-1"
+              >
+                <Minus className="h-4 w-4" />
+              </motion.button>
+              <span className="text-white font-bold min-w-[24px] text-center">
+                {quantity}
+              </span>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={onAdd}
+                className="text-white hover:bg-white/20 rounded-full p-1"
+              >
+                <Plus className="h-4 w-4" />
+              </motion.button>
+            </div>
+          )}
+        </div>
       </div>
-      <span
-        className={cn(
-          "px-1 text-center text-[10px]",
-          active ? "text-[#D4AF37]" : "text-gray-600",
-        )}
-      >
-        {label}
-      </span>
-    </button>
+    </motion.div>
   );
 }

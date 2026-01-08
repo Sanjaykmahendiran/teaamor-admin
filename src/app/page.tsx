@@ -50,7 +50,7 @@ export default function LoginPage() {
         role: "retailer",
       })
 
-      router.push("/home")
+      router.push("/dashboard")
     }, 1500)
   }
 

@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { Bell, Search, User, LogOut, UserCircle } from "lucide-react";
+import { Bell, Search, User, LogOut, UserCircle, Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import logo from "@/assets/starbucks/tea-amor-logo.png"
@@ -9,6 +9,7 @@ import { logout } from "@/lib/auth";
 export default function Header() {
     const router = useRouter();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isShopOpen, setIsShopOpen] = useState(true);
     const menuRef = useRef<HTMLDivElement>(null);
 
     // Close menu when clicking outside
@@ -51,11 +52,25 @@ export default function Header() {
                 </div>
             </div>
             <div className="flex items-center gap-4">
+                {/* Shop Status Toggle */}
+                <div className="flex items-center gap-2">
+                    <span className={`text-xs font-medium ${isShopOpen ? 'text-green-600' : 'text-red-600'
+                        }`}>
+                        {isShopOpen ? 'Open' : 'Closed'}
+                    </span>
+                    <button
+                        onClick={() => setIsShopOpen(!isShopOpen)}
+                        className={`relative w-11 h-6 rounded-full transition-colors ${isShopOpen ? 'bg-primary' : 'bg-gray-300'
+                            }`}
+                    >
+                        <div
+                            className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${isShopOpen ? 'translate-x-5' : 'translate-x-0'
+                                }`}
+                        />
+                    </button>
+                </div>
+                <div className="h-5 w-px bg-gray-300" />
                 <Bell className="h-5 w-5 text-gray-600" />
-                <Search
-                    className="h-5 w-5 text-gray-600 cursor-pointer"
-                    onClick={() => router.push("/search-orders")}
-                />
                 <div className="relative" ref={menuRef}>
                     <User
                         className="h-5 w-5 text-gray-600 cursor-pointer hover:text-primary transition-colors"
@@ -84,6 +99,7 @@ export default function Header() {
                     )}
                 </div>
             </div>
+
         </header>
     );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { menu } from "framer-motion/client";
-import { Home, Menu, User, Monitor, ClipboardList } from "lucide-react";
+import { Home, Menu, User, Monitor, ClipboardList, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,10 +10,10 @@ export default function Footer() {
 
     const links = [
         { href: "/dashboard", icon: Home, label: "Home" },
-        { href: "/ordermenu", icon: ClipboardList, label: "orders" },
-        { href: "/menu-interface", icon: Menu, label: "menu" },  // Replace "#" with actual path
+        { href: "/ordermenu", icon: ClipboardList, label: "Orders" },
         { href: "/pos", icon: Monitor, label: "POS" },
-        // { href: "/account", icon: User, label: "Account" },
+        { href: "/menu-interface", icon: Menu, label: "Menu" },
+        { href: "/more", icon: MoreHorizontal, label: "More" },
     ];
 
     return (
