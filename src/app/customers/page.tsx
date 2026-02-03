@@ -29,6 +29,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { api } from "@/lib/api-service";
 
 interface Customer {
     id: string;
@@ -55,62 +56,56 @@ export default function CustomersPage() {
         phone: "",
     });
 
-    // Load customers from localStorage or initialize with sample data
+    // Load customers from API
     useEffect(() => {
-        const savedCustomers = localStorage.getItem("customers");
-        if (savedCustomers) {
-            setCustomers(JSON.parse(savedCustomers));
-        } else {
-            // Initialize with sample data
-            const sampleCustomers: Customer[] = [
-                {
-                    id: crypto.randomUUID(),
-                    name: "Rajesh Kumar",
-                    phone: "+91 98765 43210",
-                    totalOrders: 15,
-                    totalSpent: 3450,
-                    lastOrderDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-                    status: "active",
-                },
-                {
-                    id: crypto.randomUUID(),
-                    name: "Priya Sharma",
-                    phone: "+91 87654 32109",
-                    totalOrders: 8,
-                    totalSpent: 1850,
-                    lastOrderDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-                    status: "active",
-                },
-                {
-                    id: crypto.randomUUID(),
-                    name: "Amit Patel",
-                    phone: "+91 76543 21098",
-                    totalOrders: 22,
-                    totalSpent: 5670,
-                    lastOrderDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-                    status: "active",
-                },
-                {
-                    id: crypto.randomUUID(),
-                    name: "Sneha Reddy",
-                    phone: "+91 65432 10987",
-                    totalOrders: 4,
-                    totalSpent: 890,
-                    lastOrderDate: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
-                    status: "inactive",
-                },
-            ];
-            setCustomers(sampleCustomers);
-            localStorage.setItem("customers", JSON.stringify(sampleCustomers));
-        }
+        const fetchCustomers = async () => {
+            try {
+                // Fetch active customers
+                const activeData = await api.customers.list();
+                // Optionally fetch inactive? Or assume list returns all?
+                // Request lists 'inactivecustomerslist' separately.
+                // I'll fetch both and combine if they are arrays.
+                let combined: any[] = [];
+                if (Array.isArray(activeData)) combined = [...activeData];
+
+                try {
+                    const inactiveData = await api.customers.inactiveList();
+                    if (Array.isArray(inactiveData)) {
+                        // Avoid duplicates if any
+                        const existingIds = new Set(combined.map((c: any) => c.id || c.customer_id));
+                        inactiveData.forEach((c: any) => {
+                            const id = c.id || c.customer_id;
+                            if (!existingIds.has(id)) {
+                                combined.push(c);
+                            }
+                        });
+                    }
+                } catch (e) {
+                    console.warn("Could not fetch inactive customers", e);
+                }
+
+                if (combined.length > 0) {
+                    const mapped = combined.map((c: any) => ({
+                        id: c.id || c.customer_id,
+                        name: c.name || c.customer_name || "Unknown",
+                        phone: c.phone || c.mobile || "",
+                        email: c.email,
+                        totalOrders: c.totalOrders || c.total_orders || 0,
+                        totalSpent: c.totalSpent || c.total_spent || 0,
+                        lastOrderDate: c.lastOrderDate || c.last_order_date || new Date().toISOString(),
+                        status: c.status || "active"
+                    }));
+                    setCustomers(mapped);
+                }
+            } catch (err) {
+                console.error("Failed to fetch customers", err);
+            }
+        };
+        fetchCustomers();
     }, []);
 
-    // Save customers to localStorage
-    useEffect(() => {
-        if (customers.length > 0 || localStorage.getItem("customers")) {
-            localStorage.setItem("customers", JSON.stringify(customers));
-        }
-    }, [customers]);
+    // Removed localStorage sync
+
 
     // Handle form submission
     const handleSubmit = (e: React.FormEvent) => {
@@ -226,8 +221,8 @@ export default function CustomersPage() {
                                 <ArrowLeft className="h-4 w-4" />
                             </Button>
                             <div>
-                            <h1 className="text-xl font-bold text-primary">Customers</h1>
-                            <p className="text-xs text-slate-600">View and manage customer data</p>
+                                <h1 className="text-xl font-bold text-primary">Customers</h1>
+                                <p className="text-xs text-slate-600">View and manage customer data</p>
                             </div>
                         </div>
                         <Button
@@ -336,13 +331,13 @@ export default function CustomersPage() {
                                             {/* Status Badge */}
                                             <div className="flex items-center gap-2">
                                                 {getStatusBadge(customer.status)}
-<motion.button
-                                                whileTap={{ scale: 0.95 }}
-                                                onClick={() => handleEdit(customer)}
-                                                className="w-full text-primary rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-1"
-                                            >
-                                                <Edit className="h-4 w-4" />
-                                            </motion.button>
+                                                <motion.button
+                                                    whileTap={{ scale: 0.95 }}
+                                                    onClick={() => handleEdit(customer)}
+                                                    className="w-full text-primary rounded-lg transition-colors text-sm font-medium flex items-center justify-center gap-1"
+                                                >
+                                                    <Edit className="h-4 w-4" />
+                                                </motion.button>
                                             </div>
                                         </div>
 
