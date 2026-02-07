@@ -7,6 +7,22 @@ import Header from "@/components/header"
 import Footer from "@/components/footer"
 import Image from "next/image"
 import ImagF from "@/assets/starbucks/teamor-logo.png"
+import { api } from "@/lib/api-service"
+
+// Helper for time ago
+function getTimeAgo(dateString: string) {
+  const date = new Date(dateString);
+  const now = new Date();
+  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  if (seconds < 60) return "Just now";
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes} minutes ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} hours ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days} days ago`;
+  return date.toLocaleDateString();
+}
 
 const OrderMenu = () => {
   const [activeTab, setActiveTab] = useState("new")
@@ -22,62 +38,32 @@ const OrderMenu = () => {
   const tabsContainerRef = useRef<HTMLDivElement>(null)
 
   // INITIAL DATA (Moved to State so we can update it)
-  const [orders, setOrders] = useState([
-    {
-      id: "19530",
-      items: 1,
-      customer: "kh kh",
-      timeAgo: "Yesterday",
-      type: "Pickup",
-      status: "Accepted",
-      paymentStatus: "Unpaid",
-    },
-    {
-      id: "19524",
-      items: 1,
-      customer: "Aydin Ametxan",
-      timeAgo: "Yesterday",
-      type: "Delivery",
-      status: "Accepted",
-      paymentStatus: "Unpaid",
-    },
-    {
-      id: "19121",
-      items: 2,
-      customer: "Blasy Vava",
-      timeAgo: "2 months ago",
-      type: "Delivery",
-      status: "Ready",
-      paymentStatus: "Paid",
-    },
-    {
-      id: "19395",
-      items: 2,
-      customer: "Trt 6",
-      timeAgo: "3 weeks ago",
-      type: "Delivery",
-      status: "Completed",
-      paymentStatus: "Paid",
-    },
-    {
-      id: "19112",
-      items: 2,
-      customer: "New Customer",
-      timeAgo: "1 hour ago",
-      type: "Delivery",
-      status: "New",
-      paymentStatus: "Unpaid",
-    },
-    {
-      id: "19500",
-      items: 3,
-      customer: "Test Customer",
-      timeAgo: "30 minutes ago",
-      type: "Pickup",
-      status: "Completed",
-      paymentStatus: "Unpaid",
-    },
-  ])
+  // INITIAL DATA (Moved to State so we can update it)
+  const [orders, setOrders] = useState<any[]>([]) // Initial empty, fetched via API
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const data = await api.orders.list();
+        if (data && Array.isArray(data)) {
+          // Map API data to UI model
+          const mappedOrders = data.map((o: any) => ({
+            id: o.id || o.order_id,
+            items: o.items ? (Array.isArray(o.items) ? o.items.length : o.items) : 0, // Assume items is array or count
+            customer: o.customer_name || o.customer || "Unknown",
+            timeAgo: o.created_at ? getTimeAgo(o.created_at) : "Recently",
+            type: o.order_type || o.type || "Pickup", // Pickup/Delivery
+            status: o.status || "New", // New, Accepted, Ready, Completed
+            paymentStatus: o.payment_status || o.paymentStatus || "Unpaid"
+          }));
+          setOrders(mappedOrders);
+        }
+      } catch (e) {
+        console.error("Failed to fetch orders", e);
+      }
+    };
+    fetchOrders();
+  }, []);
 
   // Calculate counts dynamically based on current state
   const counts = {
@@ -102,7 +88,7 @@ const OrderMenu = () => {
 
   // --- ACTIONS ---
 
-  const handleMarkAsCompleted = (e: React.MouseEvent, orderId: string) => {
+  const handleMarkAsCompleted = async (e: React.MouseEvent, orderId: string) => {
     e.stopPropagation() // Prevent clicking the card accordion
 
     // Find the current order to get its status
@@ -133,11 +119,17 @@ const OrderMenu = () => {
     }
 
     // 1. Update Order Status
-    setOrders(prevOrders =>
-      prevOrders.map(order =>
-        order.id === orderId ? { ...order, status: nextStatus as any } : order
+    try {
+      await api.orders.updateStatus(orderId, nextStatus);
+      setOrders(prevOrders =>
+        prevOrders.map(order =>
+          order.id === orderId ? { ...order, status: nextStatus as any } : order
+        )
       )
-    )
+    } catch (err) {
+      console.error("Failed to update status", err);
+      // Optionally revert or show error
+    }
 
     // 2. Reset Swipe
     setSwipedOrderId(null)

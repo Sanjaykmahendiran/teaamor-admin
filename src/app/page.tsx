@@ -8,6 +8,7 @@ import { Mail, Lock, Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { setUser } from "@/lib/auth"
+import { api } from "@/lib/api-service"
 
 import PhoneIllustration from "@/assets/starbucks/phone-pic.png"
 import logo from "@/assets/starbucks/tea-amor-logo.png"
@@ -33,25 +34,42 @@ export default function LoginPage() {
   }, [])
 
   /* ---------------- HANDLERS ---------------- */
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    
+
     if (!email.trim() || !password.trim()) {
       return
     }
 
     setIsLoading(true)
 
-    setTimeout(() => {
-      setUser({
-        id: crypto.randomUUID(),
-        name: email.split("@")[0], // Use email prefix as name
-        mobile: "",
-        role: "retailer",
-      })
+    try {
+      // Call API Login
+      const response = await api.auth.login(email, password);
+
+      // Store user details if provided, or fallback to ensure app stays "authenticated"
+      // Assuming response might be { token, user: { ... } } or just { token }
+      // If the API returns user info, use it. Otherwise, create a placeholder so `auth.ts` is happy.
+      if (response) {
+        // Create a user object compatible with existing auth.ts
+        const userData = response.user || {
+          id: response.id || "user_id_placeholder",
+          name: response.name || email.split("@")[0],
+          mobile: response.mobile || "",
+          role: response.role || "retailer",
+          storeName: response.storeName,
+          distributorName: response.distributorName
+        };
+        setUser(userData);
+      }
 
       router.push("/dashboard")
-    }, 1500)
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert("Login failed. Please check your credentials."); // usage of alert as simple error feedback since no UI component for error exists
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   /* ---------------- SPLASH SCREEN ---------------- */
@@ -59,9 +77,9 @@ export default function LoginPage() {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-white">
         <div className="flex flex-col items-center gap-4">
-          <img 
-            src={logo.src} 
-            alt="Tea Amor Logo" 
+          <img
+            src={logo.src}
+            alt="Tea Amor Logo"
             className="w-48 h-48 object-contain animate-zoom"
           />
         </div>

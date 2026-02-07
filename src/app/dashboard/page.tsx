@@ -12,85 +12,70 @@ import Img from "@/assets/profile/profile.jpg"
 import Imgq from "@/assets/profile/profile1.png"
 import Imgq2 from "@/assets/profile/profile.jpg"
 import Footer from "@/components/footer"
+import { api } from "@/lib/api-service"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { TrendingUp, Coffee, Clock, Package } from "lucide-react"
 
 export default function Dashboard() {
-  const [selectedStatusTab, setSelectedStatusTab] = useState("processing");
+  const [selectedStatusTab, setSelectedStatusTab] = useState("all");
+  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState<any>(null);
 
-  // Orders data with status
-  const orders = [
-    {
-      id: "19644",
-      items: "Signature Tea x2, Ginger Tea x1",
-      time: "11 hours ago",
-      amount: "₹70.00",
-      status: "processing",
-      paymentStatus: "Unpaid",
-    },
-    {
-      id: "19643",
-      items: "Classic Tea x1, Elachi Tea x1, Samosa x2",
-      time: "Yesterday",
-      amount: "₹50.00",
-      status: "completed",
-      paymentStatus: "Paid",
-    },
-    {
-      id: "19642",
-      items: "Ginger Tea x3, Hot Chocolate x1",
-      time: "2 hours ago",
-      amount: "₹95.00",
-      status: "ready",
-      paymentStatus: "Paid",
-    },
-    {
-      id: "19641",
-      items: "Hot Chocolate x1, Filter Coffee x1",
-      time: "1 day ago",
-      amount: "₹125.00",
-      status: "completed",
-      paymentStatus: "Paid",
-    },
-    {
-      id: "19640",
-      items: "Signature Tea x1, Classic Tea x2",
-      time: "30 minutes ago",
-      amount: "₹55.00",
-      status: "processing",
-      paymentStatus: "Unpaid",
-    },
-    {
-      id: "19639",
-      items: "Manjal Milagu Milk x2, Maggi x1",
-      time: "2 days ago",
-      amount: "₹75.00",
-      status: "completed",
-      paymentStatus: "Paid",
-    },
-    {
-      id: "19638",
-      items: "Cold Shake x2, Quick Bites x1",
-      time: "2 days ago",
-      amount: "₹180.00",
-      status: "completed",
-      paymentStatus: "Unpaid",
-    },
-  ];
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const result = await api.dashboard();
+        setData(result);
+      } catch (err) {
+        console.error("Dashboard fetch failed", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadData();
+  }, []);
 
-  // Calculate order counts by status
+  // Use API data or fallbacks
+  const orders = data?.recentOrders || []; // Expecting dashboard to return 'recentOrders'
+  const totalEarnings = data?.totalEarnings || "₹0.00";
+
+  const todayStats = data?.todayStats || {
+    orders: 0,
+    revenue: 0,
+    avgOrderValue: 0,
+    peakHour: "N/A"
+  };
+
+  const salesMetrics = data?.salesMetrics; // For slider
+  const salesChartData = data?.salesChartData; // For chart
+  const popularItems = data?.popularItems || [];
+  const revenueByCategory = data?.revenueByCategory || [];
+
+  // Calculate order counts from the *fetched* orders (or maybe API provides counts?)
+  // If API provides counts, use them. If not, calculate from `orders` list if it's full list.
+  // Dashboard usually provides summary. "Last Orders" implies a subset.
+  // I'll assume `orders` is just the list shown. 
+  // But the pill counts (All: X, Processing: Y) might come separately?
+  // I'll calculate from the list I have, but relying on backend for counts is better.
+  // For now, I'll calculate from the visual list I have + maybe an "all" count from API?
+  // Let's stick to calculating from the `orders` array we have for now, assuming it contains the relevant set.
+
   const orderCounts = {
     all: orders.length,
-    processing: orders.filter(order => order.status === "processing").length,
-    ready: orders.filter(order => order.status === "ready").length,
-    completed: orders.filter(order => order.status === "completed").length,
+    processing: orders.filter((o: any) => o.status === "processing").length,
+    ready: orders.filter((o: any) => o.status === "ready").length,
+    completed: orders.filter((o: any) => o.status === "completed").length,
   };
 
   // Filter orders based on selected tab
-  const filteredOrders = selectedStatusTab === "all" 
-    ? orders 
-    : orders.filter(order => order.status === selectedStatusTab);
+  const filteredOrders = selectedStatusTab === "all"
+    ? orders
+    : orders.filter((order: any) => order.status === selectedStatusTab);
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading dashboard...</div>;
+  }
 
   return (
 
@@ -109,11 +94,11 @@ export default function Dashboard() {
           </div>
           <div className="bg-gradient-to-br from-[#2c375d] to-[#1a2440] p-6 rounded-2xl shadow-lg mb-6">
             <p className="text-sm text-slate-300 mb-1">Total Earnings</p>
-            <p className="text-4xl md:text-5xl font-bold text-[#D4AF37]">₹37,518.96</p>
+            <p className="text-4xl md:text-5xl font-bold text-[#D4AF37]">{totalEarnings}</p>
           </div>
 
           {/* Stats Cards */}
-          <FinancialMetricsSlider />
+          <FinancialMetricsSlider metrics={salesMetrics} />
         </div>
 
         {/* Today's Summary Section */}
@@ -128,7 +113,7 @@ export default function Dashboard() {
                 <p className="text-xs text-slate-500">Today's Orders</p>
                 <Package className="h-4 w-4 text-primary" />
               </div>
-              <p className="text-2xl font-bold text-primary">142</p>
+              <p className="text-2xl font-bold text-primary">{todayStats.orders}</p>
               <p className="text-xs text-emerald-600 mt-1 flex items-center gap-1">
                 <TrendingUp className="h-3 w-3" />
                 +12% from yesterday
@@ -139,7 +124,7 @@ export default function Dashboard() {
                 <p className="text-xs text-slate-500">Today's Revenue</p>
                 <TrendingUp className="h-4 w-4 text-[#D4AF37]" />
               </div>
-              <p className="text-2xl font-bold text-[#D4AF37]">₹8,450</p>
+              <p className="text-2xl font-bold text-[#D4AF37]">₹{todayStats.revenue}</p>
               <p className="text-xs text-emerald-600 mt-1 flex items-center gap-1">
                 <TrendingUp className="h-3 w-3" />
                 +8% from yesterday
@@ -150,7 +135,7 @@ export default function Dashboard() {
                 <p className="text-xs text-slate-500">Avg. Order Value</p>
                 <Coffee className="h-4 w-4 text-primary" />
               </div>
-              <p className="text-2xl font-bold text-primary">₹59.50</p>
+              <p className="text-2xl font-bold text-primary">₹{todayStats.avgOrderValue}</p>
               <p className="text-xs text-slate-400 mt-1">Per order</p>
             </div>
             <div className="bg-white rounded-xl p-4 shadow-md border border-slate-100">
@@ -158,7 +143,7 @@ export default function Dashboard() {
                 <p className="text-xs text-slate-500">Peak Hour</p>
                 <Clock className="h-4 w-4 text-primary" />
               </div>
-              <p className="text-2xl font-bold text-primary">4-6 PM</p>
+              <p className="text-2xl font-bold text-primary">{todayStats.peakHour}</p>
               <p className="text-xs text-slate-400 mt-1">Most busy time</p>
             </div>
           </div>
@@ -186,8 +171,8 @@ export default function Dashboard() {
                   key={key}
                   onClick={() => setSelectedStatusTab(key)}
                   className={`relative flex items-center justify-center px-5 py-2.5 rounded-full transition-all duration-300 shadow-sm hover:shadow-md whitespace-nowrap ${isActive
-                      ? "bg-primary text-white shadow-lg scale-105"
-                      : "bg-white text-slate-700 hover:bg-slate-50 border border-slate-200"
+                    ? "bg-primary text-white shadow-lg scale-105"
+                    : "bg-white text-slate-700 hover:bg-slate-50 border border-slate-200"
                     }`}
                 >
                   {/* Badge */}
@@ -207,7 +192,7 @@ export default function Dashboard() {
           {/* Order List */}
           <div className="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden">
             {filteredOrders.length > 0 ? (
-              filteredOrders.map((order, index) => {
+              filteredOrders.map((order: any, index: number) => {
                 const getStatusBadge = () => {
                   switch (order.status) {
                     case "processing":
@@ -282,7 +267,7 @@ export default function Dashboard() {
             )}
           </div>
         </div>
-        
+
         {/* Popular Items Section */}
         <div className="mb-8">
           <div className="mb-4">
@@ -480,7 +465,7 @@ export default function Dashboard() {
         {/* Sales Overview Section */}
         <div className="flex justify-between items-center mb-3">
         </div>
-        <SalesOverview />
+        <SalesOverview chartData={salesChartData} />
 
 
         {/* Review Overview Section */}

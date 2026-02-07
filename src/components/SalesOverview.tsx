@@ -12,8 +12,12 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
 
-const SalesOverview = () => {
-  const data = {
+interface Props {
+  chartData?: any; // strict typing for chart.js is complex, allow any for now or specific structure
+}
+
+const SalesOverview = ({ chartData }: Props) => {
+  const data = chartData || {
     labels: ["Jun", "May", "Apr", "Mar", "Feb", "Jan", "Dec"],
     datasets: [
       {
