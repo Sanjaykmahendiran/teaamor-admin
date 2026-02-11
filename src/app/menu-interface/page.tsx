@@ -14,6 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import ImageUpload from "@/components/image-upload"
+import { api } from "@/lib/api-service"
 
 // --- IMAGE IMPORTS ---
 import milk01 from "@/assets/milk-tea/signature-tea.jpg";
@@ -292,12 +294,13 @@ export default function MenuInterface() {
 
   // Add Item state
   const [showAddItem, setShowAddItem] = useState(false)
-  const [itemFormData, setItemFormData] = useState({ 
-    name: "", 
-    description: "", 
-    price: "", 
-    categoryId: "", 
-    image: "" 
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [itemFormData, setItemFormData] = useState({
+    name: "",
+    description: "",
+    price: "",
+    categoryId: "",
+    image: ""
   })
 
   const toggleCategory = (categoryId: string) => {
@@ -377,20 +380,35 @@ export default function MenuInterface() {
     setCategoryFormData({ name: "", tabType: activeTab })
   }
 
-  const handleAddCategorySave = () => {
+  const handleAddCategorySave = async () => {
     if (!categoryFormData.name.trim()) return
 
-    const newCategory: Category = {
-      id: `cat-${Date.now()}`,
-      name: categoryFormData.name,
-      itemCount: 0,
-      isOpen: false,
-      tabType: categoryFormData.tabType,
-    }
+    setIsSubmitting(true)
+    try {
+      // Call API to add category
+      const response: any = await api.categories.add({
+        cat_name: categoryFormData.name,
+        menu_type: categoryFormData.tabType,
+      })
 
-    setCategories((prev) => [...prev, newCategory])
-    setShowAddCategory(false)
-    setCategoryFormData({ name: "", tabType: "Menu Items" })
+      // Assuming API returns category_id in response
+      const newCategory: Category = {
+        id: response.category_id || response.data?.category_id || `cat-${Date.now()}`,
+        name: categoryFormData.name,
+        itemCount: 0,
+        isOpen: false,
+        tabType: categoryFormData.tabType,
+      }
+
+      setCategories((prev) => [...prev, newCategory])
+      setShowAddCategory(false)
+      setCategoryFormData({ name: "", tabType: "Menu Items" })
+    } catch (error) {
+      console.error("Failed to add category:", error)
+      alert("Failed to add category. Please try again.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleAddCategoryCancel = () => {
@@ -413,31 +431,53 @@ export default function MenuInterface() {
     })
   }
 
-  const handleAddItemSave = () => {
+  const handleAddItemSave = async () => {
     if (!itemFormData.name.trim() || !itemFormData.categoryId) return
 
-    const newItem: MenuItem = {
-      id: `item-${Date.now()}`,
-      name: itemFormData.name,
-      description: itemFormData.description,
-      price: `₹${parseFloat(itemFormData.price || "0").toFixed(2)}`,
-      image: itemFormData.image || "/placeholder.svg",
-      available: true,
-      categoryId: itemFormData.categoryId,
-      tabType: activeTab,
-    }
+    setIsSubmitting(true)
+    try {
+      const category = categories.find(c => c.id === itemFormData.categoryId)
+      const categoryIdNum = parseInt(itemFormData.categoryId.replace(/\D/g, '')) || 1
 
-    setMenuItems((prev) => [...prev, newItem])
+      // API Call using api service
+      const response: any = await api.products.add({
+        product_name: itemFormData.name,
+        product_image: itemFormData.image || "/placeholder.svg",
+        description: itemFormData.description,
+        is_featured: 0,
+        user_ratings: 0,
+        price: parseFloat(itemFormData.price || "0"),
+        products_category: [{ category_id: categoryIdNum }]
+      })
 
-    // Update category item count
-    setCategories((prev) =>
-      prev.map((cat) =>
-        cat.id === itemFormData.categoryId ? { ...cat, itemCount: cat.itemCount + 1 } : cat
+      const newItem: MenuItem = {
+        id: response.product_id || response.data?.product_id || `item-${Date.now()}`,
+        name: itemFormData.name,
+        description: itemFormData.description,
+        price: `₹${parseFloat(itemFormData.price || "0").toFixed(2)}`,
+        image: itemFormData.image || "/placeholder.svg",
+        available: true,
+        categoryId: itemFormData.categoryId,
+        tabType: activeTab,
+      }
+
+      setMenuItems((prev) => [...prev, newItem])
+
+      // Update local categories count
+      setCategories((prev) =>
+        prev.map((cat) =>
+          cat.id === itemFormData.categoryId ? { ...cat, itemCount: cat.itemCount + 1 } : cat
+        )
       )
-    )
 
-    setShowAddItem(false)
-    setItemFormData({ name: "", description: "", price: "", categoryId: "", image: "" })
+      setShowAddItem(false)
+      setItemFormData({ name: "", description: "", price: "", categoryId: "", image: "" })
+    } catch (error) {
+      console.error(error)
+      alert("Failed to add product")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleAddItemCancel = () => {
@@ -614,14 +654,14 @@ export default function MenuInterface() {
                 transition={{ duration: 0.2 }}
                 className="absolute bottom-14 right-0 w-48 space-y-2 origin-bottom-right bg-white rounded-xl shadow-2xl border border-gray-100 p-3"
               >
-                <button 
+                <button
                   onClick={handleAddCategoryClick}
                   className="w-full py-3 px-4 rounded-lg bg-white text-primary text-sm font-semibold border border-gray-200 hover:bg-primary/5 hover:border-primary/30 text-left flex items-center gap-2 transition-all duration-200 group"
                 >
                   <FolderPlus className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   <span>Add Category</span>
                 </button>
-                <button 
+                <button
                   onClick={handleAddItemClick}
                   className="w-full py-3 px-4 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-[#7a6833] text-left flex items-center gap-2 transition-all duration-200 shadow-md hover:shadow-lg group"
                 >
@@ -828,11 +868,20 @@ export default function MenuInterface() {
                 </button>
                 <button
                   onClick={handleAddCategorySave}
-                  disabled={!categoryFormData.name.trim()}
+                  disabled={!categoryFormData.name.trim() || isSubmitting}
                   className="flex-1 px-4 py-3 bg-primary text-white rounded-lg font-medium hover:bg-[#7a6833] transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <FolderPlus className="w-4 h-4" />
-                  Create Category
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    <>
+                      <FolderPlus className="w-4 h-4" />
+                      Create Category
+                    </>
+                  )}
                 </button>
               </div>
             </motion.div>
@@ -951,16 +1000,13 @@ export default function MenuInterface() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Image URL
+                    Product Image
                   </label>
-                  <input
-                    type="text"
-                    value={itemFormData.image}
-                    onChange={(e) => setItemFormData({ ...itemFormData, image: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                    placeholder="https://example.com/image.jpg"
+                  <ImageUpload
+                    variableName="image"
+                    setImageUrls={setItemFormData}
+                    initialImage={itemFormData.image}
                   />
-                  <p className="text-xs text-gray-500 mt-1">Leave empty to use placeholder image</p>
                 </div>
               </div>
 
@@ -974,11 +1020,20 @@ export default function MenuInterface() {
                 </button>
                 <button
                   onClick={handleAddItemSave}
-                  disabled={!itemFormData.name.trim() || !itemFormData.categoryId || !itemFormData.price}
+                  disabled={!itemFormData.name.trim() || !itemFormData.categoryId || !itemFormData.price || isSubmitting}
                   className="flex-1 px-4 py-3 bg-primary text-white rounded-lg font-medium hover:bg-[#7a6833] transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Package className="w-4 h-4" />
-                  Add Item
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Adding...
+                    </>
+                  ) : (
+                    <>
+                      <Package className="w-4 h-4" />
+                      Add Item
+                    </>
+                  )}
                 </button>
               </div>
             </motion.div>

@@ -21,19 +21,76 @@ import { useState } from "react";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import clsx from "clsx";
-import {
-    ADMIN_REDEMPTION_HISTORY,
-    getPendingRedemptions,
-    getTodayRedemptions,
-    type RedemptionRecord
-} from "@/data/membership-admin-data";
+import { useRouter } from "next/navigation";
+import { api } from "@/lib/api-service";
+import { useEffect } from "react";
 
 export default function RedemptionsPage() {
-    const [redemptions, setRedemptions] = useState(ADMIN_REDEMPTION_HISTORY);
+    const [redemptions, setRedemptions] = useState<any[]>([]);
+    const [stats, setStats] = useState({ pending: 0, today: 0, completed: 0 });
+    const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [filterStatus, setFilterStatus] = useState<"all" | "pending" | "redeemed" | "cancelled">("all");
-    const [selectedRedemption, setSelectedRedemption] = useState<RedemptionRecord | null>(null);
-    const [dateFilter, setDateFilter] = useState<"all" | "today" | "week" | "month">("all");
+    const [selectedRedemption, setSelectedRedemption] = useState<any | null>(null);
+
+    const loadData = async () => {
+        setLoading(true);
+        try {
+            const [listData, statsData] = await Promise.all([
+                api.redemptions.list(),
+                api.redemptions.getStats()
+            ]);
+
+            const list = Array.isArray(listData) ? listData : ((listData as any).data || []);
+
+            // Map API model to UI model
+            const mappedRedemptions = list.map((r: any) => ({
+                id: r.id,
+                memberName: r.member_name,
+                memberPhone: r.member_phone,
+                teaType: r.tea_type,
+                store: r.store,
+                date: r.date,
+                time: r.time,
+                planName: r.plan_name,
+                status: r.status,
+                verifiedBy: r.verified_by,
+                notes: r.notes
+            }));
+
+            setRedemptions(mappedRedemptions);
+            setStats({
+                pending: statsData?.pending || 0,
+                today: statsData?.today || 0,
+                completed: statsData?.completed || 0
+            });
+        } catch (error) {
+            console.error("Failed to load redemption data:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadData();
+    }, []);
+
+    const handleVerifyRedemption = async (redemptionId: number) => {
+        try {
+            await api.redemptions.verify(redemptionId);
+            loadData();
+        } catch (error) {
+            console.error("Failed to verify redemption:", error);
+        }
+    };
+
+    const handleCancelRedemption = async (redemptionId: number) => {
+        // Assuming there might be a cancel endpoint eventually, 
+        // for now just using verify with a different status if supported, 
+        // or just local state if not. 
+        // Since user didn't provide cancel api, I'll keep it simple.
+        console.log("Cancel redemption not implemented in API yet");
+    };
 
     const filteredRedemptions = redemptions.filter((redemption) => {
         const matchesSearch =
@@ -46,22 +103,6 @@ export default function RedemptionsPage() {
 
         return matchesSearch && matchesStatus;
     });
-
-    const handleVerifyRedemption = (redemptionId: number) => {
-        setRedemptions(redemptions.map(r =>
-            r.id === redemptionId
-                ? { ...r, status: "redeemed", verifiedBy: "Admin" }
-                : r
-        ));
-    };
-
-    const handleCancelRedemption = (redemptionId: number) => {
-        setRedemptions(redemptions.map(r =>
-            r.id === redemptionId
-                ? { ...r, status: "cancelled" }
-                : r
-        ));
-    };
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -76,9 +117,9 @@ export default function RedemptionsPage() {
         }
     };
 
-    const pendingCount = redemptions.filter(r => r.status === "pending").length;
-    const todayCount = getTodayRedemptions().length;
-    const completedToday = getTodayRedemptions().filter(r => r.status === "redeemed").length;
+    const pendingCount = stats.pending;
+    const todayCount = stats.today;
+    const completedToday = stats.completed;
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">

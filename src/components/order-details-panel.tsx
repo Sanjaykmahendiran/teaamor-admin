@@ -2,7 +2,7 @@ import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Calendar, MapPin, Truck } from "lucide-react"
-import type { Order } from "@/app/settings/page"
+import { Order } from "@/types/shared"
 
 interface OrderDetailsPanelProps {
   selectedOrder: Order
@@ -74,7 +74,7 @@ export function OrderDetailsPanel({ selectedOrder, getStatusColor }: OrderDetail
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {selectedOrder.products.map((product, index) => (
+            {selectedOrder.products?.map((product, index) => (
               <div key={index} className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
                 <div
                   className="w-12 h-12 bg-white rounded-lg overflow-hidden"

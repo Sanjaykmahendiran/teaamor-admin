@@ -34,6 +34,7 @@ import {
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { useRouter } from "next/navigation";
+import { api } from "@/lib/api-service";
 
 interface Expense {
   id: string;
@@ -56,11 +57,13 @@ const expenseCategories = [
 
 export default function ExpensePage() {
   const router = useRouter();
-  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [expenses, setExpenses] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const [editingExpense, setEditingExpense] = useState<any | null>(null);
   const [dateFilter, setDateFilter] = useState<string>("all");
 
   // Form state
@@ -72,42 +75,42 @@ export default function ExpensePage() {
     description: "",
   });
 
-  // Load expenses from localStorage or initialize with sample data
-  useEffect(() => {
-    const savedExpenses = localStorage.getItem("expenses");
-    if (savedExpenses) {
-      setExpenses(JSON.parse(savedExpenses));
-    } else {
-      // Initialize with sample data if no expenses exist
-      const sampleExpenses: Expense[] = [
-        {
-          id: crypto.randomUUID(),
-          title: "Milk & Tea Supplies",
-          amount: 2500.00,
-          category: "ingredients",
-          date: new Date().toISOString().split("T")[0],
-          description: "Monthly purchase of milk, tea leaves, and sugar",
-        },
-        {
-          id: crypto.randomUUID(),
-          title: "Electricity Bill",
-          amount: 3500.00,
-          category: "utilities",
-          date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split("T")[0], // 2 days ago
-          description: "Monthly electricity bill for the shop",
-        },
-      ];
-      setExpenses(sampleExpenses);
-      localStorage.setItem("expenses", JSON.stringify(sampleExpenses));
-    }
-  }, []);
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const [expensesData, categoriesData] = await Promise.all([
+        api.expenses.list(),
+        api.expenses.listCategories()
+      ]);
 
-  // Save expenses to localStorage
-  useEffect(() => {
-    if (expenses.length > 0 || localStorage.getItem("expenses")) {
-      localStorage.setItem("expenses", JSON.stringify(expenses));
+      const expList = Array.isArray(expensesData) ? expensesData : ((expensesData as any).data || []);
+      const catList = Array.isArray(categoriesData) ? categoriesData : ((categoriesData as any).data || []);
+
+      setExpenses(expList.map((e: any) => ({
+        id: e.expense_id?.toString(),
+        title: e.expense_title,
+        amount: Number(e.amount || 0),
+        category: e.category_id?.toString(),
+        categoryName: e.category_name,
+        date: e.expense_date,
+        description: e.notes,
+        paymentMode: e.payment_mode
+      })));
+
+      setCategories(catList.map((c: any) => ({
+        id: c.expcategory_id?.toString(),
+        label: c.category_name
+      })));
+    } catch (error) {
+      console.error("Failed to load expense data:", error);
+    } finally {
+      setLoading(false);
     }
-  }, [expenses]);
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   // Filter expenses
   const filteredExpenses = useMemo(() => {
@@ -120,7 +123,7 @@ export default function ExpensePage() {
         (expense) =>
           expense.title.toLowerCase().includes(query) ||
           expense.description?.toLowerCase().includes(query) ||
-          expense.category.toLowerCase().includes(query)
+          expense.categoryName?.toLowerCase().includes(query)
       );
     }
 
@@ -170,38 +173,40 @@ export default function ExpensePage() {
   }, [expenses]);
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!formData.title.trim() || !formData.amount || !formData.category || !formData.date) {
       return;
     }
 
-    const expense: Expense = {
-      id: editingExpense?.id || crypto.randomUUID(),
-      title: formData.title.trim(),
-      amount: parseFloat(formData.amount),
-      category: formData.category,
-      date: formData.date,
-      description: formData.description.trim() || undefined,
-    };
-
-    if (editingExpense) {
-      setExpenses((prev) => prev.map((e) => (e.id === expense.id ? expense : e)));
+    try {
+      if (editingExpense) {
+        await api.expenses.edit({
+          expense_id: editingExpense.id,
+          category_id: formData.category,
+          expense_title: formData.title.trim(),
+          amount: parseFloat(formData.amount),
+          expense_date: formData.date,
+          payment_mode: "Cash", // Default or add to form
+          notes: formData.description.trim()
+        });
+      } else {
+        await api.expenses.add({
+          category_id: formData.category,
+          expense_title: formData.title.trim(),
+          amount: parseFloat(formData.amount),
+          expense_date: formData.date,
+          payment_mode: "Cash", // Default or add to form
+          notes: formData.description.trim()
+        });
+      }
+      loadData();
+      setShowAddForm(false);
       setEditingExpense(null);
-    } else {
-      setExpenses((prev) => [...prev, expense]);
+    } catch (error) {
+      console.error("Failed to save expense:", error);
     }
-
-    // Reset form
-    setFormData({
-      title: "",
-      amount: "",
-      category: "",
-      date: new Date().toISOString().split("T")[0],
-      description: "",
-    });
-    setShowAddForm(false);
   };
 
   // Handle edit
@@ -218,9 +223,14 @@ export default function ExpensePage() {
   };
 
   // Handle delete
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string | number) => {
     if (confirm("Are you sure you want to delete this expense?")) {
-      setExpenses((prev) => prev.filter((e) => e.id !== id));
+      try {
+        await api.expenses.delete(id);
+        loadData();
+      } catch (error) {
+        console.error("Failed to delete expense:", error);
+      }
     }
   };
 
@@ -327,12 +337,11 @@ export default function ExpensePage() {
               </SelectTrigger>
               <SelectContent className="bg-white">
                 <SelectItem value="all">All Categories</SelectItem>
-                {expenseCategories.map((cat) => {
-                  const IconComponent = cat.icon;
+                {categories.map((cat) => {
                   return (
-                    <SelectItem key={cat.id} value={cat.id}>
+                    <SelectItem key={cat.id} value={cat.id.toString()}>
                       <div className="flex items-center gap-2">
-                        <IconComponent className="h-4 w-4" />
+                        <Tag className="h-4 w-4" />
                         <span>{cat.label}</span>
                       </div>
                     </SelectItem>
@@ -372,11 +381,8 @@ export default function ExpensePage() {
                   >
                     <div className="flex items-start gap-3">
                       {/* Icon */}
-                      <div className={`w-10 h-10 rounded-lg ${categoryInfo.color} flex items-center justify-center flex-shrink-0`}>
-                        {(() => {
-                          const IconComponent = categoryInfo.icon;
-                          return <IconComponent className="h-5 w-5" />;
-                        })()}
+                      <div className={`w-10 h-10 rounded-lg bg-red-100 text-red-700 flex items-center justify-center flex-shrink-0`}>
+                        <DollarSign className="h-5 w-5" />
                       </div>
 
                       {/* Content */}
@@ -385,8 +391,8 @@ export default function ExpensePage() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between mb-1 flex-wrap">
                               <h3 className="font-semibold text-primary text-sm">{expense.title}</h3>
-                              <span className={`text-xs px-1.5 py-0.5 rounded-full ${categoryInfo.color} font-medium whitespace-nowrap`}>
-                                {categoryInfo.label}
+                              <span className={`text-xs px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-medium whitespace-nowrap`}>
+                                {expense.categoryName}
                               </span>
                             </div>
                             {expense.description && (
@@ -537,12 +543,11 @@ export default function ExpensePage() {
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
-                      {expenseCategories.map((cat) => {
-                        const IconComponent = cat.icon;
+                      {categories.map((cat) => {
                         return (
-                          <SelectItem key={cat.id} value={cat.id}>
+                          <SelectItem key={cat.id} value={cat.id.toString()}>
                             <div className="flex items-center gap-2">
-                              <IconComponent className="h-4 w-4" />
+                              <Tag className="h-4 w-4" />
                               <span>{cat.label}</span>
                             </div>
                           </SelectItem>

@@ -17,31 +17,76 @@ import {
     AlertCircle,
     ArrowLeft
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import clsx from "clsx";
-import {
-    ACTIVE_MEMBERS,
-    getMemberById,
-    getRedemptionsByMember,
-    getTransactionsByMember,
-    type ActiveMember
-} from "@/data/membership-admin-data";
 import { useRouter } from "next/navigation";
+import { api } from "@/lib/api-service";
+import { motion } from "framer-motion";
 
 export default function MembersPage() {
     const router = useRouter();
-    const [members, setMembers] = useState(ACTIVE_MEMBERS);
+    const [members, setMembers] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [filterStatus, setFilterStatus] = useState<"all" | "active" | "expired">("all");
-    const [selectedMember, setSelectedMember] = useState<ActiveMember | null>(null);
+    const [selectedMember, setSelectedMember] = useState<any | null>(null);
+
+    const loadMembers = async () => {
+        setLoading(true);
+        try {
+            const data = await api.members.list();
+            const list = Array.isArray(data) ? data : ((data as any).data || []);
+
+            // Map API model to UI model
+            const mappedMembers = list.map((m: any) => {
+                const membership = m.membership || {};
+                const customer = m.customer || {};
+                const plan = m.plan || {};
+
+                const total = parseInt(membership.total_tea_count) || 0;
+                const remaining = parseInt(membership.remaining_tea_count) || 0;
+
+                return {
+                    id: membership.customer_membership_id || m.id,
+                    name: customer.name || m.name,
+                    email: customer.email || m.email,
+                    phone: customer.mobilenumber || customer.phone || m.phone,
+                    planId: membership.plan_id || m.plan_id,
+                    planName: plan.plan_name || m.plan_name,
+                    totalTeas: total,
+                    usedTeas: total - remaining,
+                    remainingTeas: remaining,
+                    dailyLimit: parseInt(membership.daily_limit) || 1,
+                    status: membership.status || m.status,
+                    categoryName: plan.plan_name || m.category_name,
+                    purchasedOn: membership.start_date || m.purchased_on,
+                    validTill: membership.end_date || m.valid_till,
+                    lastRedemption: membership.last_redemption_date || m.last_redemption,
+                    redeemedToday: membership.redeemed_today === true || membership.redeemed_today === 1
+                };
+            });
+
+            setMembers(mappedMembers);
+        } catch (error) {
+            console.error("Failed to load members:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadMembers();
+    }, []);
 
     const filteredMembers = members.filter((member) => {
+        const query = searchQuery.toLowerCase();
         const matchesSearch =
-            member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            member.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            member.phone.includes(searchQuery);
+            (member.name?.toLowerCase() || "").includes(query) ||
+            (member.email?.toLowerCase() || "").includes(query) ||
+            (member.phone || "").includes(query) ||
+            (member.categoryName?.toLowerCase() || "").includes(query);
 
         const matchesFilter = filterStatus === "all" || member.status === filterStatus;
 
@@ -107,7 +152,7 @@ export default function MembersPage() {
                 </section>
 
                 {/* SEARCH & FILTERS */}
-                <section className="px-4 mb-4 space-y-3">
+                <section className="px-4 mb-6 space-y-4">
                     {/* Search */}
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -116,56 +161,29 @@ export default function MembersPage() {
                             placeholder="Search by name, email, or phone..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
+                            className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none shadow-sm"
                         />
                     </div>
 
-                    {/* Tabs */}
-                    <div className="border-b border-gray-200">
-                        <div className="flex gap-6 justify-between">
-                            <button
-                                onClick={() => setFilterStatus("all")}
-                                className={clsx(
-                                    "pb-3 px-1 text-sm font-medium transition-colors relative",
-                                    filterStatus === "all"
-                                        ? "text-primary"
-                                        : "text-gray-600 hover:text-gray-900"
-                                )}
-                            >
-                                All Members
-                                {filterStatus === "all" && (
-                                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"></div>
-                                )}
-                            </button>
-                            <button
-                                onClick={() => setFilterStatus("active")}
-                                className={clsx(
-                                    "pb-3 px-1 text-sm font-medium transition-colors relative",
-                                    filterStatus === "active"
-                                        ? "text-primary"
-                                        : "text-gray-600 hover:text-gray-900"
-                                )}
-                            >
-                                Active
-                                {filterStatus === "active" && (
-                                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"></div>
-                                )}
-                            </button>
-                            <button
-                                onClick={() => setFilterStatus("expired")}
-                                className={clsx(
-                                    "pb-3 px-1 text-sm font-medium transition-colors relative",
-                                    filterStatus === "expired"
-                                        ? "text-primary"
-                                        : "text-gray-600 hover:text-gray-900"
-                                )}
-                            >
-                                Expired
-                                {filterStatus === "expired" && (
-                                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"></div>
-                                )}
-                            </button>
-                        </div>
+                    {/* Tabs - Premium Scrollable Design */}
+                    <div className="flex items-center gap-3 overflow-x-auto no-scrollbar py-1">
+                        {[
+                            { label: "All Members", value: "all" },
+                            { label: "Active", value: "active" },
+                            { label: "Expired", value: "expired" }
+                        ].map((tab) => {
+                            const isActive = filterStatus === tab.value;
+                            return (
+                                <button
+                                    key={tab.value}
+                                    onClick={() => setFilterStatus(tab.value as any)}
+                                    className={`relative px-6 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all duration-300 flex-shrink-0
+                                        ${isActive ? 'text-white bg-[#2D3142] shadow-md' : 'text-gray-500 hover:text-gray-900 bg-white border border-gray-100 shadow-sm'}`}
+                                >
+                                    <span className="relative z-10">{tab.label}</span>
+                                </button>
+                            );
+                        })}
                     </div>
                 </section>
 
@@ -177,9 +195,9 @@ export default function MembersPage() {
                             <p className="text-gray-600">No members found</p>
                         </div>
                     ) : (
-                        filteredMembers.map((member) => (
+                        filteredMembers.map((member, index) => (
                             <div
-                                key={member.id}
+                                key={member.id || index}
                                 className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
                             >
                                 {/* MEMBER HEADER */}
@@ -188,7 +206,7 @@ export default function MembersPage() {
                                         <div className="flex items-start gap-3 flex-1 min-w-0">
                                             {/* Avatar */}
                                             <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center text-white font-semibold flex-shrink-0">
-                                                {member.name.charAt(0)}
+                                                {member.name?.charAt(0) || "U"}
                                             </div>
 
                                             {/* Info */}
@@ -207,10 +225,15 @@ export default function MembersPage() {
                                                         {member.phone}
                                                     </span>
                                                 </div>
-                                                <div className="flex items-center gap-2">
+                                                <div className="flex items-center gap-2 flex-wrap">
                                                     <Badge className="bg-[#D4AF37]/10 text-[#D4AF37] text-xs">
                                                         {member.planName}
                                                     </Badge>
+                                                    {member.categoryName && (
+                                                        <Badge className="bg-blue-100 text-blue-700 text-xs">
+                                                            {member.categoryName}
+                                                        </Badge>
+                                                    )}
                                                     {member.redeemedToday && (
                                                         <Badge className="bg-green-100 text-green-700 text-xs">
                                                             Redeemed Today
@@ -243,7 +266,7 @@ export default function MembersPage() {
 
                                     {/* Progress Bar */}
                                     <Progress
-                                        value={(member.usedTeas / member.totalTeas) * 100}
+                                        value={member.totalTeas > 0 ? (member.usedTeas / member.totalTeas) * 100 : 0}
                                         className="h-2 mb-3"
                                     />
 
@@ -301,7 +324,7 @@ export default function MembersPage() {
                             {/* Profile */}
                             <div className="flex items-start gap-4">
                                 <div className="h-16 w-16 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center text-white text-2xl font-semibold">
-                                    {selectedMember.name.charAt(0)}
+                                    {selectedMember.name?.charAt(0) || "U"}
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-semibold text-gray-900">{selectedMember.name}</h3>
@@ -324,56 +347,30 @@ export default function MembersPage() {
                                     </div>
                                 </div>
                                 <Progress
-                                    value={(selectedMember.usedTeas / selectedMember.totalTeas) * 100}
+                                    value={selectedMember.totalTeas > 0 ? (selectedMember.usedTeas / selectedMember.totalTeas) * 100 : 0}
                                     className="h-2 bg-white/30 mb-2"
                                 />
                                 <p className="text-xs text-white/80">
-                                    {selectedMember.usedTeas} of {selectedMember.totalTeas} teas used
+                                    {(selectedMember.usedTeas || 0)} of {(selectedMember.totalTeas || 0)} teas used
                                 </p>
                             </div>
 
-                            {/* Redemptions */}
+                            {/* Redemptions (Mock for now as per original unless API provided) */}
                             <div>
                                 <h4 className="font-semibold text-gray-900 mb-3">Recent Redemptions</h4>
                                 <div className="space-y-2">
-                                    {getRedemptionsByMember(selectedMember.id).slice(0, 3).map((redemption) => (
-                                        <div key={redemption.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                            <div>
-                                                <p className="text-sm font-medium text-gray-900">{redemption.teaType}</p>
-                                                <p className="text-xs text-gray-500">{redemption.store}</p>
-                                            </div>
-                                            <div className="text-right">
-                                                <p className="text-xs font-medium text-gray-900">{redemption.date}</p>
-                                                <p className="text-xs text-gray-500">{redemption.time}</p>
-                                            </div>
-                                        </div>
-                                    ))}
+                                    {/* This section would normally fetch redemptions for the selected member */}
+                                    {/* In the original it used getRedemptionsByMember from mock data */}
+                                    <p className="text-sm text-gray-500 italic">Redemption history will be loaded here.</p>
                                 </div>
                             </div>
 
-                            {/* Transactions */}
+                            {/* Transactions (Mock for now as per original unless API provided) */}
                             <div>
                                 <h4 className="font-semibold text-gray-900 mb-3">Transactions</h4>
                                 <div className="space-y-2">
-                                    {getTransactionsByMember(selectedMember.id).map((transaction) => (
-                                        <div key={transaction.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                            <div>
-                                                <p className="text-sm font-medium text-gray-900">{transaction.planName}</p>
-                                                <p className="text-xs text-gray-500">{transaction.date} · {transaction.paymentMethod}</p>
-                                            </div>
-                                            <div className="text-right">
-                                                <p className="text-sm font-bold text-gray-900">₹{transaction.amount}</p>
-                                                <Badge className={clsx(
-                                                    "text-xs",
-                                                    transaction.status === "completed"
-                                                        ? "bg-green-100 text-green-700"
-                                                        : "bg-yellow-100 text-yellow-700"
-                                                )}>
-                                                    {transaction.status}
-                                                </Badge>
-                                            </div>
-                                        </div>
-                                    ))}
+                                    {/* In the original it used getTransactionsByMember from mock data */}
+                                    <p className="text-sm text-gray-500 italic">Transaction history will be loaded here.</p>
                                 </div>
                             </div>
                         </div>

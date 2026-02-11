@@ -16,12 +16,12 @@ import {
     MoreVertical,
     ArrowLeft
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import clsx from "clsx";
-import { PLAN_PERFORMANCE } from "@/data/membership-admin-data";
 import { useRouter } from "next/navigation";
+import { api } from "@/lib/api-service";
 
 interface MembershipPlan {
     id: number;
@@ -38,6 +38,11 @@ interface MembershipPlan {
     active: boolean;
     benefits: string[];
     popular?: boolean;
+    performance?: {
+        activeSubscriptions: number;
+        totalRevenue: number;
+        averageRedemptionRate: number;
+    };
 }
 
 // Membership plans data
@@ -108,31 +113,142 @@ const MEMBERSHIP_PLANS: MembershipPlan[] = [
 
 export default function MembershipPlansPage() {
     const router = useRouter();
-    const [plans, setPlans] = useState(MEMBERSHIP_PLANS);
+    const [plans, setPlans] = useState<MembershipPlan[]>([]);
+    const [stats, setStats] = useState({
+        total_subscribers: 0,
+        total_revenue: 0,
+        avg_redemption: 0
+    });
+    const [loading, setLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
     const [editingPlan, setEditingPlan] = useState<MembershipPlan | null>(null);
-    const [selectedPlan, setSelectedPlan] = useState<number | null>(null);
 
-    const handleToggleActive = (planId: number) => {
-        setPlans(plans.map(plan =>
-            plan.id === planId ? { ...plan, active: !plan.active } : plan
-        ));
-    };
+    const loadData = async () => {
+        setLoading(true);
+        try {
+            const [plansData, statsData] = await Promise.all([
+                api.membership.list(),
+                api.membership.getStats()
+            ]);
 
-    const handleToggleFeatured = (planId: number) => {
-        setPlans(plans.map(plan =>
-            plan.id === planId ? { ...plan, featured: !plan.featured } : plan
-        ));
-    };
+            // Map API response to UI model if needed
+            const mappedPlans = (Array.isArray(plansData) ? plansData : ((plansData as any).data || [])).map((p: any) => ({
+                id: p.plan_id || p.id,
+                title: p.plan_name || p.title,
+                description: p.description,
+                price: parseFloat(p.price),
+                teas: p.total_tea_count || p.teas,
+                validity: `${p.duration_days || p.validity_days} Days`,
+                validityDays: p.duration_days || p.validity_days,
+                dailyLimit: p.daily_limit || 1, // Default or from API
+                savings: `₹${p.save_amount || p.savings}`,
+                badge: p.tagline || p.badge,
+                featured: p.is_featured === true || p.is_featured === 1,
+                active: p.is_active === true || p.is_active === 1,
+                benefits: Array.isArray(p.mem_benefits)
+                    ? p.mem_benefits.map((b: any) => b.benefit_text)
+                    : (Array.isArray(p.benefits) ? p.benefits : []),
+                performance: p.performance
+            }));
 
-    const handleDelete = (planId: number) => {
-        if (confirm("Are you sure you want to delete this plan?")) {
-            setPlans(plans.filter(plan => plan.id !== planId));
+            setPlans(mappedPlans);
+            setStats({
+                total_subscribers: statsData?.total_subscribers || (typeof statsData === 'object' ? 0 : statsData) || 0,
+                total_revenue: statsData?.total_revenue || 0,
+                avg_redemption: statsData?.avg_redemption || 0
+            });
+        } catch (error) {
+            console.error("Failed to load membership data:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const getPlanPerformance = (planId: number) => {
-        return PLAN_PERFORMANCE.find(p => p.planId === planId);
+    useEffect(() => {
+        loadData();
+    }, []);
+
+    const mapUIToApi = (plan: any) => ({
+        plan_id: plan.id,
+        plan_name: plan.title,
+        tagline: plan.badge || "",
+        description: plan.description || "",
+        price: plan.price,
+        duration_days: plan.validityDays,
+        total_tea_count: plan.teas,
+        save_amount: typeof plan.savings === 'string'
+            ? parseFloat(plan.savings.replace('₹', '') || "0")
+            : plan.savings,
+        is_featured: plan.featured ? 1 : 0,
+        is_popular: plan.popular ? 1 : 0,
+        is_active: plan.active ? 1 : 0,
+        mem_benefits: (plan.benefits || []).map((b: string) => ({ benefit_text: b }))
+    });
+
+    const handleToggleActive = async (plan: MembershipPlan) => {
+        try {
+            const apiPayload = mapUIToApi(plan);
+            apiPayload.is_active = plan.active ? 0 : 1;
+            await api.membership.edit(apiPayload as any);
+            loadData();
+        } catch (error) {
+            console.error("Failed to toggle status:", error);
+        }
+    };
+
+    const handleToggleFeatured = async (plan: MembershipPlan) => {
+        try {
+            const apiPayload = mapUIToApi(plan);
+            apiPayload.is_featured = plan.featured ? 0 : 1;
+            await api.membership.edit(apiPayload as any);
+            loadData();
+        } catch (error) {
+            console.error("Failed to toggle featured:", error);
+        }
+    };
+
+    const handleSavePlan = async (formData: any) => {
+        try {
+            const apiPayload = {
+                plan_name: formData.title,
+                tagline: formData.badge,
+                description: formData.description,
+                price: formData.price,
+                duration_days: formData.validityDays,
+                total_tea_count: formData.teas,
+                save_amount: formData.savings,
+                is_featured: formData.featured ? 1 : 0,
+                is_popular: formData.popular ? 1 : 0,
+                is_active: 1,
+                mem_benefits: formData.benefits.map((b: string) => ({ benefit_text: b }))
+            };
+
+            if (editingPlan) {
+                await api.membership.edit({
+                    ...apiPayload,
+                    plan_id: editingPlan.id
+                } as any);
+            } else {
+                await api.membership.add(apiPayload as any);
+            }
+
+            setShowAddModal(false);
+            setEditingPlan(null);
+            loadData();
+        } catch (error) {
+            console.error("Failed to save plan:", error);
+        }
+    };
+
+    const handleDelete = async (planId: number) => {
+        if (confirm("Are you sure you want to delete this plan?")) {
+            try {
+                await api.membership.delete(planId);
+                loadData();
+            } catch (error) {
+                console.error("Failed to delete plan:", error);
+            }
+        }
     };
 
     return (
@@ -178,7 +294,7 @@ export default function MembershipPlansPage() {
                                 <span>Total Subscribers</span>
                             </div>
                             <p className="text-lg font-bold text-gray-900">
-                                {PLAN_PERFORMANCE.reduce((sum, p) => sum + p.activeSubscriptions, 0)}
+                                {stats.total_subscribers}
                             </p>
                         </div>
                         <div className="bg-white rounded-xl p-4 shadow-sm">
@@ -187,7 +303,7 @@ export default function MembershipPlansPage() {
                                 <span>Total Revenue</span>
                             </div>
                             <p className="text-lg font-bold text-gray-900">
-                                ₹{PLAN_PERFORMANCE.reduce((sum, p) => sum + p.totalRevenue, 0).toLocaleString()}
+                                ₹{stats.total_revenue.toLocaleString()}
                             </p>
                         </div>
                         <div className="bg-white rounded-xl p-4 shadow-sm">
@@ -196,7 +312,7 @@ export default function MembershipPlansPage() {
                                 <span>Avg Redemption</span>
                             </div>
                             <p className="text-lg font-bold text-gray-900">
-                                {(PLAN_PERFORMANCE.reduce((sum, p) => sum + p.averageRedemptionRate, 0) / PLAN_PERFORMANCE.length).toFixed(1)}%
+                                {stats.avg_redemption}%
                             </p>
                         </div>
                     </div>
@@ -205,7 +321,6 @@ export default function MembershipPlansPage() {
                 {/* PLANS LIST */}
                 <section className="px-4 space-y-4">
                     {plans.map((plan) => {
-                        const performance = getPlanPerformance(plan.id);
                         return (
                             <div
                                 key={plan.id}
@@ -279,7 +394,7 @@ export default function MembershipPlansPage() {
                                 </div>
 
                                 {/* PERFORMANCE METRICS */}
-                                {performance && (
+                                {plan.performance && (
                                     <div className="p-4 bg-gray-50">
                                         <h4 className="text-xs font-semibold text-gray-900 mb-3 uppercase">
                                             Performance
@@ -288,19 +403,19 @@ export default function MembershipPlansPage() {
                                             <div>
                                                 <p className="text-xs text-gray-600 mb-1">Active Subs</p>
                                                 <p className="text-lg font-bold text-gray-900">
-                                                    {performance.activeSubscriptions}
+                                                    {plan.performance.activeSubscriptions}
                                                 </p>
                                             </div>
                                             <div>
                                                 <p className="text-xs text-gray-600 mb-1">Revenue</p>
                                                 <p className="text-lg font-bold text-gray-900">
-                                                    ₹{performance.totalRevenue.toLocaleString()}
+                                                    ₹{plan.performance.totalRevenue.toLocaleString()}
                                                 </p>
                                             </div>
                                             <div>
                                                 <p className="text-xs text-gray-600 mb-1">Redemption Rate</p>
                                                 <p className="text-lg font-bold text-gray-900">
-                                                    {performance.averageRedemptionRate}%
+                                                    {plan.performance.averageRedemptionRate}%
                                                 </p>
                                             </div>
                                         </div>
@@ -311,7 +426,7 @@ export default function MembershipPlansPage() {
                                 <div className="p-3 border-t border-gray-100">
                                     <div className="grid grid-cols-4 gap-2">
                                         <button
-                                            onClick={() => handleToggleActive(plan.id)}
+                                            onClick={() => handleToggleActive(plan)}
                                             className={clsx(
                                                 "flex flex-col items-center justify-center gap-1 p-2 rounded-lg transition-all",
                                                 plan.active
@@ -329,7 +444,7 @@ export default function MembershipPlansPage() {
                                             </span>
                                         </button>
                                         <button
-                                            onClick={() => handleToggleFeatured(plan.id)}
+                                            onClick={() => handleToggleFeatured(plan)}
                                             className={clsx(
                                                 "flex flex-col items-center justify-center gap-1 p-2 rounded-lg transition-all",
                                                 plan.featured
@@ -368,6 +483,199 @@ export default function MembershipPlansPage() {
             </div>
 
             <Footer />
+
+            {/* ADD/EDIT MODAL */}
+            {(showAddModal || editingPlan) && (
+                <MembershipPlanModal
+                    plan={editingPlan}
+                    onClose={() => {
+                        setShowAddModal(false);
+                        setEditingPlan(null);
+                    }}
+                    onSave={handleSavePlan}
+                />
+            )}
+        </div>
+    );
+}
+
+function MembershipPlanModal({ plan, onClose, onSave }: { plan: any, onClose: () => void, onSave: (data: any) => void }) {
+    const [formData, setFormData] = useState({
+        title: plan?.title || "",
+        badge: plan?.badge || "",
+        description: plan?.description || "",
+        price: plan?.price || 0,
+        teas: plan?.teas || 0,
+        validityDays: plan?.validityDays || 30,
+        savings: typeof plan?.savings === 'string'
+            ? parseFloat(plan.savings.replace('₹', '') || "0")
+            : (plan?.save_amount || 0),
+        featured: plan?.featured || false,
+        popular: plan?.popular || false,
+        benefits: plan?.benefits || [""]
+    });
+
+    const addBenefit = () => {
+        setFormData({ ...formData, benefits: [...formData.benefits, ""] });
+    };
+
+    const updateBenefit = (index: number, value: string) => {
+        const newBenefits = [...formData.benefits];
+        newBenefits[index] = value;
+        setFormData({ ...formData, benefits: newBenefits });
+    };
+
+    const removeBenefit = (index: number) => {
+        const newBenefits = formData.benefits.filter((_: any, i: number) => i !== index);
+        setFormData({ ...formData, benefits: newBenefits });
+    };
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <div className="bg-white rounded-3xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+                <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+                    <h2 className="text-xl font-bold text-gray-900">
+                        {plan ? "Edit Membership Plan" : "Add New Plan"}
+                    </h2>
+                    <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full">
+                        <Plus className="h-5 w-5 rotate-45" />
+                    </Button>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                    <div className="space-y-2">
+                        <label className="text-sm font-semibold text-gray-700">Plan Name</label>
+                        <input
+                            type="text"
+                            value={formData.title}
+                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                            placeholder="e.g. Monthly Tea Pass"
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-sm font-semibold text-gray-700">Tagline / Badge</label>
+                            <input
+                                type="text"
+                                value={formData.badge}
+                                onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                                placeholder="e.g. Best Value"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-semibold text-gray-700">Price (₹)</label>
+                            <input
+                                type="number"
+                                value={formData.price}
+                                onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-sm font-semibold text-gray-700">Total Teas</label>
+                            <input
+                                type="number"
+                                value={formData.teas}
+                                onChange={(e) => setFormData({ ...formData, teas: parseInt(e.target.value) })}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-semibold text-gray-700">Validity (Days)</label>
+                            <input
+                                type="number"
+                                value={formData.validityDays}
+                                onChange={(e) => setFormData({ ...formData, validityDays: parseInt(e.target.value) })}
+                                className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-semibold text-gray-700">Description</label>
+                        <textarea
+                            value={formData.description}
+                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none min-h-[80px]"
+                            placeholder="Briefly describe the plan benefits..."
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-semibold text-gray-700">Save Amount (₹)</label>
+                        <input
+                            type="number"
+                            value={formData.savings}
+                            onChange={(e) => setFormData({ ...formData, savings: parseFloat(e.target.value) })}
+                            className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                        />
+                    </div>
+
+                    <div className="flex gap-6 pt-2">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={formData.featured}
+                                onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
+                                className="w-4 h-4 rounded text-primary focus:ring-primary"
+                            />
+                            <span className="text-sm font-medium text-gray-700">Featured</span>
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={formData.popular}
+                                onChange={(e) => setFormData({ ...formData, popular: e.target.checked })}
+                                className="w-4 h-4 rounded text-primary focus:ring-primary"
+                            />
+                            <span className="text-sm font-medium text-gray-700">Popular</span>
+                        </label>
+                    </div>
+
+                    <div className="space-y-3 pt-2">
+                        <div className="flex items-center justify-between">
+                            <label className="text-sm font-semibold text-gray-700">Benefits</label>
+                            <Button variant="outline" size="sm" onClick={addBenefit} className="h-7 text-xs rounded-lg">
+                                + Add Benefit
+                            </Button>
+                        </div>
+                        {formData.benefits.map((benefit: string, idx: number) => (
+                            <div key={idx} className="flex gap-2">
+                                <input
+                                    type="text"
+                                    value={benefit}
+                                    onChange={(e) => updateBenefit(idx, e.target.value)}
+                                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-sm"
+                                    placeholder="Enter benefit text..."
+                                />
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => removeBenefit(idx)}
+                                    className="text-red-400 hover:text-red-600 hover:bg-red-50"
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="p-6 border-t border-gray-100 flex gap-3">
+                    <Button variant="outline" onClick={onClose} className="flex-1 rounded-xl h-12">
+                        Cancel
+                    </Button>
+                    <Button onClick={() => onSave(formData)} className="flex-1 rounded-xl h-12 bg-primary hover:bg-primary/90">
+                        {plan ? "Update Plan" : "Create Plan"}
+                    </Button>
+                </div>
+            </div>
         </div>
     );
 }
