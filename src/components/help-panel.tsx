@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Phone, Mail, HelpCircle, ClipboardList, MessageSquare, ChevronRight, Clock } from "lucide-react"
-import type { ActivePanel } from "@/app/settings/page"
+import { ActivePanel } from "@/types/shared"
 
 interface HelpPanelProps {
   setActivePanel: (panel: ActivePanel) => void
@@ -60,7 +60,7 @@ export function HelpPanel({ setActivePanel }: HelpPanelProps) {
             <ChevronRight className="h-4 w-4 text-gray-400" />
           </Button>
         </CardContent>
-      </Card> 
+      </Card>
       {/* Business Hours */}
       <Card>
         <CardHeader>

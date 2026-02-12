@@ -29,6 +29,7 @@ import Footer from "@/components/footer";
 import ImagF from "@/assets/fries/cheesy-fernch-fries.jpg"
 import ImagF1 from "@/assets/puff/egg-puff.jpg"
 import { useRouter } from "next/navigation";
+import { api } from "@/lib/api-service";
 interface Offer {
     id: string;
     title: string;
@@ -69,51 +70,53 @@ export default function OffersPage() {
         return "active";
     };
 
-    // Load offers from localStorage or initialize with sample data
-    useEffect(() => {
-        const savedOffers = localStorage.getItem("offers");
-        if (savedOffers) {
-            setOffers(JSON.parse(savedOffers));
-        } else {
-            // Initialize with sample data
-            const sampleOffers: Offer[] = [
-                {
-                    id: crypto.randomUUID(),
-                    title: "New Year Special",
-                    discountType: "percentage",
-                    discountValue: 20,
-                    startDate: new Date().toISOString().split("T")[0],
-                    endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-                    description: "20% off on all tea varieties",
-                    status: "active",
-                },
-                {
-                    id: crypto.randomUUID(),
-                    title: "Buy 2 Get 1 Free",
-                    discountType: "fixed",
-                    discountValue: 25,
-                    startDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-                    endDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-                    description: "Fixed ₹25 off on orders above ₹100",
-                    status: "active",
-                },
-            ];
-            setOffers(sampleOffers);
-            localStorage.setItem("offers", JSON.stringify(sampleOffers));
-        }
-    }, []);
+    // Load offers from API
+    const loadOffers = async () => {
+        try {
+            const [activeData, upcomingData, expiredData] = await Promise.all([
+                api.offers.list("Active"),
+                api.offers.list("Upcoming"),
+                api.offers.list("Expired")
+            ]);
 
-    // Save offers to localStorage and update status
-    useEffect(() => {
-        if (offers.length > 0 || localStorage.getItem("offers")) {
-            // Update status for all offers
-            const updatedOffers = offers.map(offer => ({
-                ...offer,
-                status: calculateStatus(offer.startDate, offer.endDate),
-            }));
-            localStorage.setItem("offers", JSON.stringify(updatedOffers));
+            const processList = (data: any) => Array.isArray(data) ? data : (data.data || []);
+
+            const allOffersRaw = [
+                ...processList(activeData),
+                ...processList(upcomingData),
+                ...processList(expiredData)
+            ];
+
+            // Map API model to UI model and remove duplicates if any (by ID)
+            const seenIds = new Set();
+            const mappedOffers: Offer[] = [];
+
+            allOffersRaw.forEach((o: any) => {
+                const id = o.offer_id?.toString() || o.id?.toString();
+                if (!id || seenIds.has(id)) return;
+                seenIds.add(id);
+
+                mappedOffers.push({
+                    id,
+                    title: o.title,
+                    discountType: o.discount_type === "flat" ? "fixed" : "percentage",
+                    discountValue: parseFloat(o.discount_value),
+                    startDate: o.start_date,
+                    endDate: o.end_date,
+                    description: o.description,
+                    status: calculateStatus(o.start_date, o.end_date)
+                });
+            });
+
+            setOffers(mappedOffers);
+        } catch (error) {
+            console.error("Failed to fetch offers:", error);
         }
-    }, [offers]);
+    };
+
+    useEffect(() => {
+        loadOffers();
+    }, []);
 
     // Filter offers
     const filteredOffers = useMemo(() => {
@@ -156,43 +159,52 @@ export default function OffersPage() {
     }, [offers]);
 
     // Handle form submission
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!formData.title.trim() || !formData.discountValue || !formData.startDate || !formData.endDate) {
             return;
         }
 
-        const status = calculateStatus(formData.startDate, formData.endDate);
-
-        const offer: Offer = {
-            id: editingOffer?.id || crypto.randomUUID(),
+        const offerPayload: any = {
             title: formData.title.trim(),
-            discountType: formData.discountType,
-            discountValue: parseFloat(formData.discountValue),
-            startDate: formData.startDate,
-            endDate: formData.endDate,
-            description: formData.description.trim() || undefined,
-            status,
+            description: formData.description.trim(),
+            discount_type: formData.discountType === "fixed" ? "flat" : "percentage",
+            discount_value: parseFloat(formData.discountValue),
+            min_order_amount: 100, // Default as per example requirement
+            start_date: formData.startDate,
+            end_date: formData.endDate,
+            offer_image: "https://teaamor.top/uploads/offer_default.jpg" // Placeholder as required by payload
         };
 
-        if (editingOffer) {
-            setOffers((prev) => prev.map((o) => (o.id === offer.id ? offer : o)));
-            setEditingOffer(null);
-        } else {
-            setOffers((prev) => [...prev, offer]);
-        }
+        try {
+            if (editingOffer) {
+                await api.offers.edit({
+                    ...offerPayload,
+                    offer_id: editingOffer.id
+                });
+            } else {
+                await api.offers.add(offerPayload);
+            }
 
-        // Reset form
-        setFormData({
-            title: "",
-            discountType: "percentage",
-            discountValue: "",
-            startDate: new Date().toISOString().split("T")[0],
-            endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-            description: "",
-        });
-        setShowAddForm(false);
+            // Reload from server
+            await loadOffers();
+
+            // Reset form
+            setFormData({
+                title: "",
+                discountType: "percentage",
+                discountValue: "",
+                startDate: new Date().toISOString().split("T")[0],
+                endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+                description: "",
+            });
+            setShowAddForm(false);
+            setEditingOffer(null);
+        } catch (error) {
+            console.error("Failed to save offer:", error);
+            alert("Error saving offer. Please try again.");
+        }
     };
 
     // Handle edit
@@ -210,9 +222,15 @@ export default function OffersPage() {
     };
 
     // Handle delete
-    const handleDelete = (id: string) => {
+    const handleDelete = async (id: string) => {
         if (confirm("Are you sure you want to delete this offer?")) {
-            setOffers((prev) => prev.filter((o) => o.id !== id));
+            try {
+                await api.offers.delete(id);
+                setOffers((prev) => prev.filter((o) => o.id !== id));
+            } catch (error) {
+                console.error("Failed to delete offer:", error);
+                alert("Error deleting offer.");
+            }
         }
     };
 
@@ -262,9 +280,9 @@ export default function OffersPage() {
                                 <ArrowLeft className="h-4 w-4" />
                             </Button>
                             <div>
-                            <h1 className="text-xl font-bold text-primary">Offers</h1>
-                            <p className="text-xs text-slate-600">Manage promotions and discounts</p>
-                        </div>
+                                <h1 className="text-xl font-bold text-primary">Offers</h1>
+                                <p className="text-xs text-slate-600">Manage promotions and discounts</p>
+                            </div>
                         </div>
                         <Button
                             onClick={() => {
@@ -315,7 +333,8 @@ export default function OffersPage() {
                 </div>
 
                 {/* Filters Section */}
-                <div className="bg-white rounded-xl shadow-md border border-slate-100 p-3 mb-4 space-y-3">
+                {/* Filters Section */}
+                <div className="bg-white rounded-xl shadow-md border border-slate-100 p-3 mb-4 space-y-4">
                     {/* Search */}
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -324,22 +343,31 @@ export default function OffersPage() {
                             placeholder="Search offers..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-10 h-10 text-sm"
+                            className="pl-10 h-10 text-sm border-slate-200 focus:border-primary"
                         />
                     </div>
 
-                    {/* Status Filter */}
-                    <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                        <SelectTrigger className="w-full h-10 text-sm">
-                            <SelectValue placeholder="Status" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white">
-                            <SelectItem value="all">All Offers</SelectItem>
-                            <SelectItem value="active">Active</SelectItem>
-                            <SelectItem value="upcoming">Upcoming</SelectItem>
-                            <SelectItem value="expired">Expired</SelectItem>
-                        </SelectContent>
-                    </Select>
+                    {/* Status Filter - Premium Scrollable Design */}
+                    <div className="flex items-center gap-3 overflow-x-auto no-scrollbar py-1">
+                        {[
+                            { label: "All Offers", value: "all" },
+                            { label: "Active", value: "active" },
+                            { label: "Upcoming", value: "upcoming" },
+                            { label: "Expired", value: "expired" }
+                        ].map((tab) => {
+                            const isActive = selectedStatus === tab.value;
+                            return (
+                                <button
+                                    key={tab.value}
+                                    onClick={() => setSelectedStatus(tab.value)}
+                                    className={`relative px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all duration-300 flex-shrink-0
+                                        ${isActive ? 'text-white bg-[#2D3142] shadow-md' : 'text-slate-500 hover:text-slate-900 bg-slate-50 border border-slate-100'}`}
+                                >
+                                    <span className="relative z-10">{tab.label}</span>
+                                </button>
+                            );
+                        })}
+                    </div>
                 </div>
 
                 {/* Offers List */}

@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ArrowLeft, User, Lock, Store, Save, Eye, EyeOff, LogOut, Mail, Phone, MapPin, Clock } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
@@ -9,7 +9,9 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { logout } from "@/lib/auth"
+import { logout, getUser } from "@/lib/auth"
+import { api } from "@/lib/api-service"
+import { Loader2 } from "lucide-react"
 
 import logo from "@/assets/starbucks/tea-amor-logo.png"
 
@@ -25,32 +27,84 @@ interface StoreSetupData {
 
 export default function ProfilePage() {
   const router = useRouter()
+  const user = getUser()
 
+  const [isLoading, setIsLoading] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
   const [storeData, setStoreData] = useState<StoreSetupData>({
-    storeName: "Tea Amor Shop",
-    storeAddress: "123 Main Street, Delhi 110001",
-    phone: "+91 9876543210",
-    email: "admin@teaamor.com",
-    gstNumber: "29ABCDE1234F1Z5",
+    storeName: "",
+    storeAddress: "",
+    phone: "",
+    email: "",
+    gstNumber: "",
     openingTime: "09:00",
     closingTime: "22:00",
   })
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!user?.id) {
+        setIsLoading(false)
+        return
+      }
+
+      try {
+        const data = await api.users.get("1"); // Using 1 as fallback for testing, user.id for real
+        if (data) {
+          setStoreData(prev => ({
+            ...prev,
+            storeName: data.username || user.name || "",
+            email: data.email || user.email || "",
+            phone: data.mobileno || user.mobile || "",
+            // Add other fields if available in API
+          }))
+        }
+      } catch (error) {
+        console.error("Failed to fetch profile:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadProfile()
+  }, [])
 
   const handleBack = () => {
     router.back()
   }
 
-  const handleSaveStoreData = () => {
-    // Save store configuration
-    console.log("Store data saved:", storeData)
-    setIsEditing(false)
-    alert("Store configuration saved successfully!")
+  const handleSaveStoreData = async () => {
+    if (!user?.id) return
+
+    try {
+      setIsLoading(true)
+      await api.users.update("1", {
+        username: storeData.storeName,
+        email: storeData.email,
+        mobileno: storeData.phone,
+        // Add other fields
+      })
+      setIsEditing(false)
+      alert("Profile updated successfully!")
+    } catch (error) {
+      console.error("Failed to update profile:", error)
+      alert("Failed to update profile. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleLogout = () => {
     logout()
     router.push("/")
+  }
+
+  if (isLoading && !isEditing) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
   }
 
   return (
@@ -117,7 +171,7 @@ export default function ProfilePage() {
                 Manage your tea shop information and settings
               </CardDescription>
             </div>
-            
+
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -258,32 +312,32 @@ export default function ProfilePage() {
               </div>
             </div>
             <div className="flex items-center justify-end">
-            {!isEditing ? (
-              <Button
-                onClick={() => setIsEditing(true)}
-                className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
-              >
-                Edit
-              </Button>
-            ) : (
-              <div className="flex gap-2">
+              {!isEditing ? (
                 <Button
-                  variant="outline"
-                  onClick={() => {
-                    setIsEditing(false)
-                  }}
+                  onClick={() => setIsEditing(true)}
+                  className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
                 >
-                  Cancel
+                  Edit
                 </Button>
-                <Button
-                  onClick={handleSaveStoreData}
-                  className="bg-primary hover:bg-primary/90 flex items-center gap-2"
-                >
-                  <Save className="h-4 w-4" />
-                  Save
-                </Button>
-              </div>
-            )}
+              ) : (
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsEditing(false)
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleSaveStoreData}
+                    className="bg-primary hover:bg-primary/90 flex items-center gap-2"
+                  >
+                    <Save className="h-4 w-4" />
+                    Save
+                  </Button>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

@@ -8,7 +8,6 @@ import { Mail, Lock, Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { setUser } from "@/lib/auth"
-import { api } from "@/lib/api-service"
 
 import PhoneIllustration from "@/assets/starbucks/phone-pic.png"
 import logo from "@/assets/starbucks/tea-amor-logo.png"
@@ -43,33 +42,25 @@ export default function LoginPage() {
 
     setIsLoading(true)
 
-    try {
-      // Call API Login
-      const response = await api.auth.login(email, password);
-
-      // Store user details if provided, or fallback to ensure app stays "authenticated"
-      // Assuming response might be { token, user: { ... } } or just { token }
-      // If the API returns user info, use it. Otherwise, create a placeholder so `auth.ts` is happy.
-      if (response) {
-        // Create a user object compatible with existing auth.ts
-        const userData = response.user || {
-          id: response.id || "user_id_placeholder",
-          name: response.name || email.split("@")[0],
-          mobile: response.mobile || "",
-          role: response.role || "retailer",
-          storeName: response.storeName,
-          distributorName: response.distributorName
-        };
-        setUser(userData);
-      }
-
-      router.push("/dashboard")
-    } catch (error) {
-      console.error("Login failed:", error);
-      alert("Login failed. Please check your credentials."); // usage of alert as simple error feedback since no UI component for error exists
-    } finally {
-      setIsLoading(false)
+    // Simple client-side login without API call
+    // Create a basic user object
+    const userData = {
+      id: "user_" + Date.now(),
+      name: email.split("@")[0],
+      email: email,
+      mobile: "",
+      role: "retailer" as const,
+      storeName: "Tea Amor",
+      distributorName: ""
     }
+
+    setUser(userData)
+
+    // Simulate loading delay
+    setTimeout(() => {
+      setIsLoading(false)
+      router.push("/dashboard")
+    }, 500)
   }
 
   /* ---------------- SPLASH SCREEN ---------------- */

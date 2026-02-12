@@ -1,6 +1,6 @@
 "use client";
 
-import { menu } from "framer-motion/client";
+// Footer component
 import { Home, Menu, User, Monitor, ClipboardList, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -22,7 +22,7 @@ export default function Footer() {
                 {links.map(({ href, icon: Icon, label }) => {
                     const isActive = pathname === href;
                     return (
-                        <Link key={href} href={href} className="flex flex-col items-center">
+                        <Link key={href} href={href} prefetch={false} className="flex flex-col items-center">
                             <Icon className={`h-5 w-5 ${isActive ? "text-[#D4AF37]" : "text-gray-400"}`} />
                             <span className={`text-xs ${isActive ? "text-[#D4AF37]" : "text-gray-400"}`}>
                                 {label}
